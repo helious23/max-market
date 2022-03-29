@@ -1,12 +1,12 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-import FloatingButton from "../../components/floating-button";
-import Layout from "../../components/layout";
+import FloatingButton from "@components/floating-button";
+import Layout from "@components/layout";
 
 const Community: NextPage = () => {
   return (
     <Layout title="동네생활" hasTabBar>
-      <div className="px-4 pb-5 space-y-8">
+      <div className="space-y-8 px-4 pb-5">
         {[1, 2, 3, 4, 5, 6].map((_, i) => (
           <Link key={i} href={`/community/${i}`}>
             <a className="flex flex-col items-start">
@@ -17,14 +17,14 @@ const Community: NextPage = () => {
                 <span className="font-medium text-orange-500">Q.</span> What is
                 the best mandu restaurant?
               </div>
-              <div className="flex items-center justify-between w-full mt-5 text-xs font-medium text-gray-500">
+              <div className="mt-5 flex w-full items-center justify-between text-xs font-medium text-gray-500">
                 <span>니꼬</span>
                 <span>18시간 전</span>
               </div>
               <div className="mt-3 flex w-full space-x-5 border-t border-b-[2px] py-2.5 text-gray-700">
                 <span className="flex items-center space-x-2 text-sm">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -41,7 +41,7 @@ const Community: NextPage = () => {
                 </span>
                 <span className="flex items-center space-x-2 text-sm">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -62,7 +62,7 @@ const Community: NextPage = () => {
         ))}
         <FloatingButton href="/community/write">
           <svg
-            className="w-6 h-6"
+            className="h-6 w-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

@@ -1,17 +1,17 @@
 import { NextPage } from "next";
-import Button from "../../components/button";
-import Input from "../../components/input";
-import Layout from "../../components/layout";
+import Button from "@components/button";
+import Input from "@components/input";
+import Layout from "@components/layout";
 
 const EditProfile: NextPage = () => {
   return (
     <Layout title="프로필 수정" canGoBack>
-      <div className="px-4 space-y-4">
+      <div className="space-y-4 px-4">
         <div className="flex items-center space-x-3">
-          <div className="rounded-full h-14 w-14 bg-slate-300" />
+          <div className="h-14 w-14 rounded-full bg-slate-300" />
           <label
             htmlFor="picture"
-            className="px-3 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-md shadow-sm cursor-pointer"
+            className="cursor-pointer rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 shadow-sm"
           >
             변경하기
             <input

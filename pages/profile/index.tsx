@@ -1,13 +1,13 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-import Layout from "../../components/layout";
+import Layout from "@components/layout";
 
 const Profile: NextPage = () => {
   return (
     <Layout title="나의 프로필" hasTabBar>
       <div className="px-4">
         <div className="flex items-center space-x-3">
-          <div className="w-16 h-16 rounded-full bg-slate-300" />
+          <div className="h-16 w-16 rounded-full bg-slate-300" />
           <div className="flex flex-col">
             <span className="font-medium text-gray-900">Steve Jebs</span>
             <Link href="/profile/edit">
@@ -15,12 +15,12 @@ const Profile: NextPage = () => {
             </Link>
           </div>
         </div>
-        <div className="flex justify-around mt-10">
+        <div className="mt-10 flex justify-around">
           <Link href="/profile/sold">
             <a className="flex flex-col items-center justify-center">
-              <div className="flex items-center justify-center text-white bg-orange-500 rounded-full h-14 w-14">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white">
                 <svg
-                  className="w-6 h-6"
+                  className="h-6 w-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -41,9 +41,9 @@ const Profile: NextPage = () => {
           </Link>
           <Link href="/profile/bought">
             <a className="flex flex-col items-center justify-center">
-              <div className="flex items-center justify-center text-white bg-orange-500 rounded-full h-14 w-14">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white">
                 <svg
-                  className="w-6 h-6"
+                  className="h-6 w-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -64,9 +64,9 @@ const Profile: NextPage = () => {
           </Link>
           <Link href="/profile/loved">
             <a className="flex flex-col items-center justify-center">
-              <div className="flex items-center justify-center text-white bg-orange-500 rounded-full h-14 w-14">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white">
                 <svg
-                  className="w-6 h-6"
+                  className="h-6 w-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -88,12 +88,12 @@ const Profile: NextPage = () => {
         </div>
         <div className="mt-12">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-full bg-slate-300" />
+            <div className="h-12 w-12 rounded-full bg-slate-300" />
             <div>
               <h4 className="text-sm font-bold text-gray-900">니꼬</h4>
               <div className="flex items-center">
                 <svg
-                  className="w-5 h-5 text-yellow-400"
+                  className="h-5 w-5 text-yellow-400"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -102,7 +102,7 @@ const Profile: NextPage = () => {
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
                 <svg
-                  className="w-5 h-5 text-yellow-400"
+                  className="h-5 w-5 text-yellow-400"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -111,7 +111,7 @@ const Profile: NextPage = () => {
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
                 <svg
-                  className="w-5 h-5 text-yellow-400"
+                  className="h-5 w-5 text-yellow-400"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -120,7 +120,7 @@ const Profile: NextPage = () => {
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
                 <svg
-                  className="w-5 h-5 text-yellow-400"
+                  className="h-5 w-5 text-yellow-400"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -129,7 +129,7 @@ const Profile: NextPage = () => {
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
                 <svg
-                  className="w-5 h-5 text-gray-400"
+                  className="h-5 w-5 text-gray-400"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"

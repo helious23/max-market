@@ -1,14 +1,36 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { cls } from "../libs/utils";
-import Button from "../components/button";
-import Input from "../components/input";
-import Layout from "../components/layout";
+import { cls } from "@libs/client/utils";
+import Button from "@components/button";
+import Input from "@components/input";
+import Layout from "@components/layout";
+import { useForm } from "react-hook-form";
+import useMutation from "@libs/client/useMutation";
+
+interface IFormProps {
+  email?: string;
+  phone?: string;
+}
 
 export default function Enter() {
+  const [enter, { loading, data, error }] = useMutation("/api/users/enter");
+  const { register, handleSubmit, reset } = useForm<IFormProps>();
+  const [submitting, setSubmitting] = useState(false);
   const [method, setMethod] = useState<"email" | "phone">("email");
-  const onEmailClick = () => setMethod("email");
-  const onPhoneClick = () => setMethod("phone");
+  const onEmailClick = () => {
+    reset();
+    setMethod("email");
+  };
+  const onPhoneClick = () => {
+    reset();
+    setMethod("phone");
+  };
+
+  const onValid = (validForm: IFormProps) => {
+    enter(validForm);
+  };
+
+  console.log(loading, data, error);
 
   return (
     <Layout title="로그인" canGoBack>
@@ -31,6 +53,7 @@ export default function Enter() {
               </button>
               {method === "email" && (
                 <motion.div
+                  key={"email"}
                   className={
                     "absolute top-10 left-0 w-6/12 border-b-2 border-orange-500 text-orange-400"
                   }
@@ -50,6 +73,7 @@ export default function Enter() {
               </button>
               {method === "phone" && (
                 <motion.div
+                  key={"phone"}
                   className={
                     "absolute top-10 right-0 w-6/12 border-b-2 border-orange-500 text-orange-400"
                   }
@@ -58,10 +82,14 @@ export default function Enter() {
               )}
             </AnimatePresence>
           </div>
-          <form className="flex flex-col mt-5 space-y-4">
+          <form
+            className="flex flex-col mt-5 space-y-4"
+            onSubmit={handleSubmit(onValid)}
+          >
             <div className="mt-1">
               {method === "email" ? (
                 <Input
+                  register={register("email", { required: true })}
                   label="이메일"
                   name="email"
                   placeholder="이메일"
@@ -70,6 +98,7 @@ export default function Enter() {
                 />
               ) : (
                 <Input
+                  register={register("phone", { required: true })}
                   kind="phone"
                   label="휴대전화 번호"
                   name="phone"
@@ -81,7 +110,11 @@ export default function Enter() {
             </div>
             <Button
               text={
-                method === "email" ? "로그인 링크 받기" : "일회용 비밀번호 받기"
+                submitting
+                  ? "Loading"
+                  : method === "email"
+                  ? "로그인 링크 받기"
+                  : "일회용 비밀번호 받기"
               }
             />
           </form>

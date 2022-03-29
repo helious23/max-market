@@ -1,4 +1,4 @@
-import { cls } from "../libs/utils";
+import { cls } from "@components/client/utils";
 
 interface IMessageProps {
   message: string;
@@ -14,8 +14,8 @@ const Message: React.FC<IMessageProps> = ({ message, reversed, avatarUrl }) => {
         reversed ? "flex-row-reverse space-x-reverse" : ""
       )}
     >
-      <div className="w-8 h-8 rounded-full bg-slate-300" />
-      <div className="w-1/2 p-2 text-sm text-gray-700 border border-gray-300 rounded-md">
+      <div className="h-8 w-8 rounded-full bg-slate-300" />
+      <div className="w-1/2 rounded-md border border-gray-300 p-2 text-sm text-gray-700">
         <p>{message}</p>
       </div>
     </div>

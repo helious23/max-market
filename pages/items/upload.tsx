@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
-import Button from "../../components/button";
-import Input from "../../components/input";
-import Layout from "../../components/layout";
-import TextArea from "../../components/textarea";
+import Button from "@components/button";
+import Input from "@components/input";
+import Layout from "@components/layout";
+import TextArea from "@components/textarea";
 
 const Upload: NextPage = () => {
   return (
@@ -33,6 +33,7 @@ const Upload: NextPage = () => {
             name="name"
             placeholder="물건의 이름을 입력하세요"
             required
+            type="text"
           />
         </div>
         <div className="space-y-5">

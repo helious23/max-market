@@ -1,15 +1,23 @@
+import type { UseFormRegisterReturn } from "react-hook-form";
+
 interface IInputProps {
   label: string;
   name: string;
   kind?: "text" | "phone" | "price";
-  [key: string]: any;
+  register: UseFormRegisterReturn;
+  required: boolean;
+  type: string;
+  placeholder: string;
 }
 
 const Input: React.FC<IInputProps> = ({
   label,
   name,
   kind = "text",
-  ...rest
+  register,
+  type,
+  placeholder,
+  required,
 }) => {
   return (
     <div>
@@ -19,8 +27,10 @@ const Input: React.FC<IInputProps> = ({
       {kind === "text" ? (
         <input
           id={name}
-          type={kind}
-          {...rest}
+          type={type}
+          required={required}
+          placeholder={placeholder}
+          {...register}
           className="w-full py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-orange-500 focus:ring-orange-500 "
         />
       ) : null}
@@ -31,7 +41,10 @@ const Input: React.FC<IInputProps> = ({
           </span>
           <input
             id={name}
-            {...rest}
+            type={type}
+            required={required}
+            placeholder={placeholder}
+            {...register}
             className="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md rounded-l-none shadow-sm appearance-none focus:border-orange-500 focus:ring-orange-500 "
           />
         </div>
@@ -43,7 +56,10 @@ const Input: React.FC<IInputProps> = ({
           </div>
           <input
             id={name}
-            {...rest}
+            type={type}
+            required={required}
+            placeholder={placeholder}
+            {...register}
             className="w-full placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none pl-7 focus:border-orange-500 focus:ring-orange-500"
           />
           <div className="absolute right-0 flex items-center pr-3 select-none">

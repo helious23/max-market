@@ -1,6 +1,6 @@
+import { cls } from "@libs/client/utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { cls } from "../libs/utils";
 
 interface LayoutProps {
   title?: string;
@@ -75,7 +75,7 @@ export default function Layout({
               <span className="text-xs">홈</span>
             </a>
           </Link>
-          <Link href="community">
+          <Link href="/community">
             <a
               className={cls(
                 "-mb-1 flex w-full flex-col items-center justify-center space-y-2",

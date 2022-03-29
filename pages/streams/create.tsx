@@ -1,8 +1,8 @@
 import { NextPage } from "next";
-import Input from "../../components/input";
-import Layout from "../../components/layout";
-import TextArea from "../../components/textarea";
-import Button from "../../components/button";
+import Input from "@components/input";
+import Layout from "@components/layout";
+import TextArea from "@components/textarea";
+import Button from "@components/button";
 
 const Create: NextPage = () => {
   return (
@@ -12,6 +12,7 @@ const Create: NextPage = () => {
           label="라이브 제목"
           name="title"
           placeholder="라이브 방송 제목을 입력하세요"
+          type="text"
         />
         <Input
           label="가격"

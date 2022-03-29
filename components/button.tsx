@@ -1,4 +1,5 @@
-import { cls } from "../libs/utils";
+import { cls } from "@libs/client/utils";
+
 interface IButtonProps {
   large?: boolean;
   text: string;
