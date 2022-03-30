@@ -41,29 +41,30 @@ const handler = async (
   });
 
   if (phone) {
-    // const message = await twilioClient.messages.create({
-    //   messagingServiceSid: process.env.MSG_SERVICE_SID,
-    //   to: `+82${phone}`,
-    //   body: `로그인을 위한 일회용 비밀번호는 ${payload} 입니다.`,
-    // });
-    // console.log(message);
+    const message = await twilioClient.messages.create({
+      messagingServiceSid: process.env.MSG_SERVICE_SID,
+      to: `+82${phone}`,
+      body: `로그인을 위한 일회용 비밀번호는 ${payload} 입니다.`,
+    });
+    console.log(message);
   } else if (email) {
-    // const sendMail = await transporter
-    //   .sendMail({
-    //     from: `Admin <${process.env.GMAIL_ID}>`,
-    //     to: email,
-    //     subject: "Max Market 로그인 링크 입니다",
-    //     text: `로그인을 위한 일회용 비밀번호는 ${payload} 입니다`,
-    //     html: `
-    //       <div style="text-align: center;">
-    //         <h3 style="color: #FA5882">ABC</h3>
-    //         <br />
-    //         <strong>로그인을 위한 일회용 비밀번호는 ${payload} 입니다</strong>
-    //       </div>
-    //   `,
-    //   })
-    //   .then((result) => console.log(result))
-    //   .catch((err) => console.log(err));
+    const sendMail = await transporter
+      .sendMail({
+        from: `Admin <${process.env.GMAIL_ID}>`,
+        to: email,
+        subject: "Max Market 로그인 링크 입니다",
+        text: `로그인을 위한 일회용 비밀번호는 ${payload} 입니다`,
+        html: `
+          <div style="text-align: center;">
+            <h3 style="color: #FA5882">Max Market</h3>
+            <br />
+            <strong>로그인을 위한 일회용 비밀번호는 ${payload} 입니다</strong>
+          </div>
+          
+      `,
+      })
+      .then((result) => console.log(result))
+      .catch((err) => console.log(err));
   }
 
   return res.json({

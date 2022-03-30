@@ -7,14 +7,14 @@ export interface ResponseType {
 
 const withHandler = (
   method: "GET" | "POST" | "DELETE",
-  fn: (req: NextApiRequest, res: NextApiResponse) => void
+  handler: (req: NextApiRequest, res: NextApiResponse) => void
 ) => {
   return async (req: NextApiRequest, res: NextApiResponse): Promise<any> => {
     if (req.method !== method) {
       return res.status(405).end();
     }
     try {
-      await fn(req, res);
+      await handler(req, res);
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error });
