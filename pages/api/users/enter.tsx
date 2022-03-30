@@ -19,7 +19,7 @@ const handler = async (
   res: NextApiResponse<ResponseType>
 ) => {
   const { phone, email } = req.body;
-  const user = phone ? { phone: +phone } : email ? { email } : null;
+  const user = phone ? { phone } : email ? { email } : null;
   if (!user) return res.status(400).json({ ok: false });
 
   const payload = Math.floor(100000 + Math.random() * 900000) + "";
