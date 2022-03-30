@@ -12,9 +12,25 @@ interface IFormProps {
   phone?: string;
 }
 
+interface ITokenFormProps {
+  token: string;
+}
+
+interface MutationResult {
+  ok: boolean;
+}
+
 export default function Enter() {
-  const [enter, { loading, data, error }] = useMutation("/api/users/enter");
+  const [enter, { loading, data, error }] =
+    useMutation<MutationResult>("/api/users/enter");
+
+  const [confirmToken, { loading: tokenLoading, data: tokenData }] =
+    useMutation<MutationResult>("/api/users/confirm");
+
   const { register, handleSubmit, reset } = useForm<IFormProps>();
+
+  const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =
+    useForm<ITokenFormProps>();
   const [method, setMethod] = useState<"email" | "phone">("email");
   const onEmailClick = () => {
     reset();
@@ -29,92 +45,131 @@ export default function Enter() {
     enter(validForm);
   };
 
+  const onTokenValid = (validForm: ITokenFormProps) => {
+    if (tokenLoading) return;
+    confirmToken(validForm);
+  };
+
+  console.log(data);
+
   return (
     <Layout title="로그인" canGoBack>
       <div className="w-full px-4 mt-8">
         <div className="mx-10">
           <h3 className="text-4xl font-bold ">안녕하세요!</h3>
-          <h2 className="mt-4 text-xl font-semibold ">다시 만나 반가워요 :)</h2>
+          <h2 className="mt-4 text-xl font-semibold ">만나서 반가워요 :)</h2>
         </div>
         <div className="mt-8">
-          <div className="relative grid w-full grid-cols-2 gap-16 border-b">
-            <AnimatePresence>
-              <button
-                className={cls(
-                  "pb-4 font-medium transition-colors",
-                  method === "email" ? "text-orange-400" : "text-gray-300"
-                )}
-                onClick={onEmailClick}
-              >
-                이메일로 로그인
-              </button>
-              {method === "email" && (
-                <motion.div
-                  key={"email"}
-                  className={
-                    "absolute top-10 left-0 w-6/12 border-b-2 border-orange-500 text-orange-400"
-                  }
-                  layoutId="login"
-                />
-              )}
-            </AnimatePresence>
-            <AnimatePresence>
-              <button
-                className={cls(
-                  "pb-4 font-medium transition-colors",
-                  method === "phone" ? "text-orange-400" : "text-gray-300"
-                )}
-                onClick={onPhoneClick}
-              >
-                휴대전화로 로그인
-              </button>
-              {method === "phone" && (
-                <motion.div
-                  key={"phone"}
-                  className={
-                    "absolute top-10 right-0 w-6/12 border-b-2 border-orange-500 text-orange-400"
-                  }
-                  layoutId="login"
-                />
-              )}
-            </AnimatePresence>
-          </div>
-          <form
-            className="flex flex-col mt-5 space-y-4"
-            onSubmit={handleSubmit(onValid)}
-          >
-            <div className="mt-1">
-              {method === "email" ? (
-                <Input
-                  register={register("email", { required: true })}
-                  label="이메일"
-                  name="email"
-                  placeholder="이메일"
-                  required
-                  type="email"
-                />
-              ) : (
-                <Input
-                  register={register("phone", { required: true })}
-                  kind="phone"
-                  label="휴대전화 번호"
-                  name="phone"
-                  placeholder="휴대전화 번호"
-                  type="number"
-                  required
-                />
-              )}
-            </div>
-            <Button
-              text={
-                loading
-                  ? "Loading"
-                  : method === "email"
-                  ? "로그인 링크 받기"
-                  : "일회용 비밀번호 받기"
-              }
-            />
-          </form>
+          <AnimatePresence>
+            {data?.ok && (
+              <motion.div layoutId="token">
+                <form
+                  className="flex flex-col mt-5 space-y-4"
+                  onSubmit={tokenHandleSubmit(onTokenValid)}
+                >
+                  <div className="mt-1">
+                    <Input
+                      register={tokenRegister("token", { required: true })}
+                      label="일회용 비밀번호"
+                      name="token"
+                      placeholder="일회용 비밀번호"
+                      required
+                      type="number"
+                    />
+                  </div>
+                  <Button
+                    text={
+                      tokenLoading ? "로딩중..." : "일회용 비밀번호 입력하기"
+                    }
+                  />
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <AnimatePresence>
+            {!data?.ok && (
+              <motion.div layoutId="token">
+                <div className="relative grid w-full grid-cols-2 gap-16 border-b">
+                  <AnimatePresence>
+                    <button
+                      className={cls(
+                        "pb-4 font-medium transition-colors",
+                        method === "email" ? "text-orange-400" : "text-gray-300"
+                      )}
+                      onClick={onEmailClick}
+                    >
+                      이메일로 로그인
+                    </button>
+                    {method === "email" && (
+                      <motion.div
+                        key={"email"}
+                        className={
+                          "absolute top-10 left-0 w-6/12 border-b-2 border-orange-500 text-orange-400"
+                        }
+                        layoutId="login"
+                      />
+                    )}
+                  </AnimatePresence>
+                  <AnimatePresence>
+                    <button
+                      className={cls(
+                        "pb-4 font-medium transition-colors",
+                        method === "phone" ? "text-orange-400" : "text-gray-300"
+                      )}
+                      onClick={onPhoneClick}
+                    >
+                      휴대전화로 로그인
+                    </button>
+                    {method === "phone" && (
+                      <motion.div
+                        key={"phone"}
+                        className={
+                          "absolute top-10 right-0 w-6/12 border-b-2 border-orange-500 text-orange-400"
+                        }
+                        layoutId="login"
+                      />
+                    )}
+                  </AnimatePresence>
+                </div>
+                <form
+                  className="flex flex-col mt-5 space-y-4"
+                  onSubmit={handleSubmit(onValid)}
+                >
+                  <div className="mt-1">
+                    {method === "email" ? (
+                      <Input
+                        register={register("email", { required: true })}
+                        label="이메일"
+                        name="email"
+                        placeholder="이메일"
+                        required
+                        type="email"
+                      />
+                    ) : (
+                      <Input
+                        register={register("phone", { required: true })}
+                        kind="phone"
+                        label="휴대전화 번호"
+                        name="phone"
+                        placeholder="휴대전화 번호"
+                        type="number"
+                        required
+                      />
+                    )}
+                  </div>
+                  <Button
+                    text={
+                      loading
+                        ? "로딩중..."
+                        : method === "email"
+                        ? "로그인 링크 받기"
+                        : "일회용 비밀번호 받기"
+                    }
+                  />
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div className="mt-8 ">
             <div className="relative">
               <div className="absolute w-full border-t border-gray-300" />
