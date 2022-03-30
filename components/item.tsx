@@ -10,7 +10,7 @@ interface IItemProps {
 
 const Item: React.FC<IItemProps> = ({ title, id, price, comments, hearts }) => {
   return (
-    <Link key={id} href={`/items/${id}`}>
+    <Link key={id} href={`/products/${id}`}>
       <a className="flex justify-between px-4 pb-4 border-b cursor-pointer">
         <div className="flex space-x-4">
           <div className="w-20 h-20 bg-gray-400 rounded-md" />
