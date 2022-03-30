@@ -1,5 +1,8 @@
 import { withIronSessionApiRoute } from "iron-session/next";
 
+// module typing
+// https://github.com/vvo/iron-session#typing-session-data-with-typescript
+
 declare module "iron-session" {
   interface IronSessionData {
     user?: {

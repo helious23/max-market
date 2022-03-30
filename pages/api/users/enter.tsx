@@ -4,6 +4,8 @@ import client from "@libs/server/client";
 import withHandler, { ResponseType } from "@libs/server/withHandler";
 import { NextApiRequest, NextApiResponse } from "next";
 
+// nodemailer 코드 참고
+// https://itnomad.tistory.com/7
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -60,7 +62,6 @@ const handler = async (
             <br />
             <strong>로그인을 위한 일회용 비밀번호는 ${payload} 입니다</strong>
           </div>
-          
       `,
       })
       .then((result) => console.log(result))
