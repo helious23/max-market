@@ -3,7 +3,19 @@ import withHandler from "@libs/server/withHandler";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log(req.body);
+  const { phone, email } = req.body;
+  const payload = phone ? { phone: +phone } : { email };
+  const user = await client.user.upsert({
+    where: {
+      ...payload,
+    },
+    create: {
+      ...payload,
+      name: "익명",
+    },
+    update: {},
+  });
+  console.log(user);
   return res.status(200).end();
 };
 

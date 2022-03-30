@@ -15,7 +15,6 @@ interface IFormProps {
 export default function Enter() {
   const [enter, { loading, data, error }] = useMutation("/api/users/enter");
   const { register, handleSubmit, reset } = useForm<IFormProps>();
-  const [submitting, setSubmitting] = useState(false);
   const [method, setMethod] = useState<"email" | "phone">("email");
   const onEmailClick = () => {
     reset();
@@ -29,8 +28,6 @@ export default function Enter() {
   const onValid = (validForm: IFormProps) => {
     enter(validForm);
   };
-
-  console.log(loading, data, error);
 
   return (
     <Layout title="로그인" canGoBack>
@@ -110,7 +107,7 @@ export default function Enter() {
             </div>
             <Button
               text={
-                submitting
+                loading
                   ? "Loading"
                   : method === "email"
                   ? "로그인 링크 받기"
