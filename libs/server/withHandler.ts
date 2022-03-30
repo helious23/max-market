@@ -1,11 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
+export interface ResponseType {
+  ok: boolean;
+  [key: string]: any;
+}
+
 const withHandler = (
   method: "GET" | "POST" | "DELETE",
-  fn: (
-    req: NextApiRequest,
-    res: NextApiResponse
-  ) => Promise<NextApiResponse<any>>
+  fn: (req: NextApiRequest, res: NextApiResponse) => Promise<void>
 ) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== method) {
