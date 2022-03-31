@@ -16,7 +16,9 @@ const Item: React.FC<IItemProps> = ({ title, id, price, comments, hearts }) => {
           <div className="w-20 h-20 bg-gray-400 rounded-md" />
           <div className="flex flex-col pt-2">
             <h3 className="text-sm font-medium text-gray-900">{title}</h3>
-            <span className="mt-1 font-medium text-gray-900">{price} 원</span>
+            <span className="mt-1 font-medium text-gray-900">
+              {price.toLocaleString()} 원
+            </span>
           </div>
         </div>
         <div className="flex items-end justify-end space-x-2">

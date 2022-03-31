@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import { Product, User } from "@prisma/client";
 import Link from "next/link";
+import Head from "next/head";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -13,6 +14,7 @@ interface ProductWithUser extends Product {
 interface IItemDetailResponse {
   ok: boolean;
   product: ProductWithUser;
+  relatedProducts: Product[];
 }
 
 const ItemDetail: NextPage = () => {
@@ -21,9 +23,11 @@ const ItemDetail: NextPage = () => {
     router.query.id ? `/api/products/${router.query.id}` : null
   );
 
-  console.log(data);
   return (
-    <Layout title="상세 정보" canGoBack>
+    <Layout title={data?.product.name || "상세 정보"} canGoBack>
+      <Head>
+        <title>{data?.product.name || "상세 정보"}</title>
+      </Head>
       <div className="px-4">
         <div className="mb-8">
           <div className="h-96 bg-slate-300" />
@@ -45,7 +49,7 @@ const ItemDetail: NextPage = () => {
               {data?.product.name}
             </h1>
             <span className="block mt-3 text-3xl text-gray-900">
-              {data?.product.price} 원
+              {data?.product.price.toLocaleString()} 원
             </span>
             <p className="my-6 text-base text-gray-700">
               {data?.product.description}
@@ -73,14 +77,18 @@ const ItemDetail: NextPage = () => {
           </div>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">비슷한 물건들</h2>
+          <h2 className="text-2xl font-bold text-gray-900">연관 상품</h2>
           <div className="grid grid-cols-2 gap-4 my-8">
-            {[1, 2, 3, 4, 5, 6].map((_, i) => (
-              <div key={i}>
-                <div className="w-full h-56 mb-4 bg-slate-300" />
-                <h3 className="-mb-1 text-gray-700">Galaxy S60</h3>
-                <span className="text-sm font-medium text-gray-900">$6</span>
-              </div>
+            {data?.relatedProducts?.map((product) => (
+              <Link key={product.id} href={`/products/${product.id}`}>
+                <a>
+                  <div className="w-full h-56 mb-4 bg-slate-300" />
+                  <h3 className="-mb-1 text-gray-700">{product.name}</h3>
+                  <span className="text-sm font-medium text-gray-900">
+                    {product.price.toLocaleString()} 원
+                  </span>
+                </a>
+              </Link>
             ))}
           </div>
         </div>
