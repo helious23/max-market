@@ -5,22 +5,37 @@ import Layout from "@components/layout";
 import TextArea from "@components/textarea";
 import { useForm } from "react-hook-form";
 import useMutation from "../../libs/client/useMutation";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { Product } from "@prisma/client";
 
 interface IUploadProductForm {
-  image: File;
   name: string;
   price: number;
   description: string;
 }
 
+interface IUploadProductMutation {
+  ok: boolean;
+  product: Product;
+}
+
 const Upload: NextPage = () => {
   const { register, handleSubmit } = useForm<IUploadProductForm>();
-  const [uploadProduct, { loading, data }] = useMutation("/api/products");
+  const [uploadProduct, { loading, data }] =
+    useMutation<IUploadProductMutation>("/api/products");
+  const router = useRouter();
 
   const onValid = (data: IUploadProductForm) => {
     if (loading) return;
     uploadProduct(data);
   };
+
+  useEffect(() => {
+    if (data?.ok) {
+      router.push(`/products/${data.product.id}`);
+    }
+  }, [data, router]);
 
   return (
     <Layout title="업로드" canGoBack>
@@ -41,11 +56,7 @@ const Upload: NextPage = () => {
                 strokeLinejoin="round"
               />
             </svg>
-            <input
-              className="hidden"
-              type="file"
-              {...register("image", { required: true })}
-            />
+            <input className="hidden" type="file" />
           </label>
         </div>
         <div className="space-y-5">
