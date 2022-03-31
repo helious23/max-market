@@ -22,11 +22,13 @@ interface IItemDetailResponse {
 
 const ItemDetail: NextPage = () => {
   const router = useRouter();
-  const { data } = useSWR<IItemDetailResponse>(
+  const { data, mutate } = useSWR<IItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/fav`);
   const onFavClick = () => {
+    if (!data) return;
+    mutate({ ...data, isLiked: !data.isLiked }, false);
     toggleFav({});
   };
 
@@ -38,12 +40,12 @@ const ItemDetail: NextPage = () => {
       <div className="px-4">
         <div className="mb-8">
           <div className="h-96 bg-slate-300" />
-          <Link href={`/users/profiles/${data?.product.user.id}`}>
+          <Link href={`/users/profiles/${data?.product?.user?.id}`}>
             <a className="flex items-center py-3 space-x-3 border-t border-b cursor-pointer">
               <div className="w-12 h-12 rounded-full bg-slate-300" />
               <div>
                 <p className="text-sm font-medium text-gray-700">
-                  {data?.product.user.name}
+                  {data?.product?.user?.name}
                 </p>
                 <div className="text-xs font-medium text-gray-500">
                   프로필 보기 &rarr;
@@ -56,7 +58,7 @@ const ItemDetail: NextPage = () => {
               {data?.product.name}
             </h1>
             <span className="block mt-3 text-3xl text-gray-900">
-              {data?.product.price.toLocaleString()} 원
+              {data?.product?.price?.toLocaleString()} 원
             </span>
             <p className="my-6 text-base text-gray-700">
               {data?.product.description}
