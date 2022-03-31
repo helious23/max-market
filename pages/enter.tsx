@@ -17,16 +17,16 @@ interface ITokenFormProps {
   token: string;
 }
 
-interface MutationResult {
+interface IMutationResult {
   ok: boolean;
 }
 
 export default function Enter() {
   const [enter, { loading, data, error }] =
-    useMutation<MutationResult>("/api/users/enter");
+    useMutation<IMutationResult>("/api/users/enter");
 
   const [confirmToken, { loading: tokenLoading, data: tokenData }] =
-    useMutation<MutationResult>("/api/users/confirm");
+    useMutation<IMutationResult>("/api/users/confirm");
 
   const { register, handleSubmit, reset } = useForm<IFormProps>();
 

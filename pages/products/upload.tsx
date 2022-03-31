@@ -3,11 +3,28 @@ import Button from "@components/button";
 import Input from "@components/input";
 import Layout from "@components/layout";
 import TextArea from "@components/textarea";
+import { useForm } from "react-hook-form";
+import useMutation from "../../libs/client/useMutation";
+
+interface IUploadProductForm {
+  image: File;
+  name: string;
+  price: number;
+  description: string;
+}
 
 const Upload: NextPage = () => {
+  const { register, handleSubmit } = useForm<IUploadProductForm>();
+  const [uploadProduct, { loading, data }] = useMutation("/api/products");
+
+  const onValid = (data: IUploadProductForm) => {
+    if (loading) return;
+    uploadProduct(data);
+  };
+
   return (
     <Layout title="업로드" canGoBack>
-      <div className="px-4 space-y-5">
+      <form className="px-4 space-y-5" onSubmit={handleSubmit(onValid)}>
         <div>
           <label className="flex items-center justify-center w-full h-48 text-gray-600 border-2 border-gray-300 border-dashed rounded-md cursor-pointer hover:border-orange-500 hover:text-orange-500">
             <svg
@@ -24,11 +41,16 @@ const Upload: NextPage = () => {
                 strokeLinejoin="round"
               />
             </svg>
-            <input className="hidden" type="file" />
+            <input
+              className="hidden"
+              type="file"
+              {...register("image", { required: true })}
+            />
           </label>
         </div>
         <div className="space-y-5">
           <Input
+            register={register("name", { required: true })}
             label="이름"
             name="name"
             placeholder="물건의 이름을 입력하세요"
@@ -38,6 +60,7 @@ const Upload: NextPage = () => {
         </div>
         <div className="space-y-5">
           <Input
+            register={register("price", { required: true })}
             label="가격"
             name="price"
             kind="price"
@@ -47,13 +70,14 @@ const Upload: NextPage = () => {
           />
         </div>
         <TextArea
+          register={register("description", { required: true })}
           label="설명"
           name="description"
           placeholder="설명을 입력하세요"
           required
         />
-        <Button text="물건 올리기" />
-      </div>
+        <Button text={loading ? "로딩중..." : "물건 올리기"} />
+      </form>
     </Layout>
   );
 };
