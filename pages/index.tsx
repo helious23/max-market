@@ -15,7 +15,7 @@ interface IProductsResponse {
 const Home: NextPage = () => {
   const { user, isLoading } = useUser();
   const { data } = useSWR<IProductsResponse>("/api/products");
-  console.log(data);
+
   return (
     <Layout title="홈" hasTabBar>
       <div className="flex flex-col mb-5 space-y-5">
