@@ -2,12 +2,13 @@ import type { NextPage } from "next";
 import Layout from "@components/layout";
 import Button from "@components/button";
 import { useRouter } from "next/router";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { Product, User } from "@prisma/client";
 import Link from "next/link";
 import Head from "next/head";
 import useMutation from "../../libs/client/useMutation";
 import { cls } from "@libs/client/utils";
+import useUser from "@libs/client/useUser";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -21,14 +22,18 @@ interface IItemDetailResponse {
 }
 
 const ItemDetail: NextPage = () => {
+  const { user, isLoading } = useUser();
   const router = useRouter();
-  const { data, mutate } = useSWR<IItemDetailResponse>(
+  const { mutate } = useSWRConfig();
+  const { data, mutate: boundMutate } = useSWR<IItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/fav`);
   const onFavClick = () => {
     if (!data) return;
-    mutate({ ...data, isLiked: !data.isLiked }, false);
+    boundMutate((prev) => prev && { ...prev, isLiked: !prev.isLiked }, false);
+    // mutate("/api/users/me", (prev: any) => ({ ok: !prev.ok }), false); // 다른 component 의 cache 를 수정
+    // mutate("/api/users/me") // 단순 refetch
     toggleFav({});
   };
 

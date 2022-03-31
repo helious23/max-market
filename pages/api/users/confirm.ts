@@ -13,7 +13,11 @@ const handler = async (
       payload: token,
     },
   });
-  if (!foundToken) return res.status(404).end();
+  if (!foundToken)
+    return res.json({
+      ok: false,
+      error: { message: "일회용 비밀번호를 확인하세요" },
+    });
   req.session.user = {
     id: foundToken.userId,
   };

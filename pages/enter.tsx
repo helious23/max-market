@@ -15,10 +15,12 @@ interface IFormProps {
 
 interface ITokenFormProps {
   token: string;
+  result?: string;
 }
 
 interface IMutationResult {
   ok: boolean;
+  error?: string;
 }
 
 export default function Enter() {
@@ -28,10 +30,15 @@ export default function Enter() {
   const [confirmToken, { loading: tokenLoading, data: tokenData }] =
     useMutation<IMutationResult>("/api/users/confirm");
 
+  const router = useRouter();
   const { register, handleSubmit, reset } = useForm<IFormProps>();
 
-  const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =
-    useForm<ITokenFormProps>();
+  const {
+    register: tokenRegister,
+    handleSubmit: tokenHandleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<ITokenFormProps>();
   const [method, setMethod] = useState<"email" | "phone">("email");
   const onEmailClick = () => {
     reset();
@@ -49,15 +56,11 @@ export default function Enter() {
   const onTokenValid = (validForm: ITokenFormProps) => {
     if (tokenLoading) return;
     confirmToken(validForm);
-  };
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (tokenData?.ok) {
-      router.push("/");
+    if (tokenData) {
+      if (tokenData.error) setError("result", { message: tokenData.error });
+      else if (tokenData.ok) router.replace("/");
     }
-  }, [tokenData, router]);
+  };
 
   return (
     <Layout title="로그인" canGoBack>
@@ -177,6 +180,9 @@ export default function Enter() {
               </motion.div>
             )}
           </AnimatePresence>
+          <div className="my-4 text-center text-red-500">
+            {errors.result?.message}
+          </div>
           <div className="mt-8 ">
             <div className="relative">
               <div className="absolute w-full border-t border-gray-300" />
