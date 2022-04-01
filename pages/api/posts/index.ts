@@ -31,13 +31,15 @@ const handler = async (
   }
   if (req.method === "POST") {
     const {
-      body: { question },
+      body: { question, latitude, longitude },
       session: { user },
     } = req;
 
     const post = await client.post.create({
       data: {
         question,
+        latitude,
+        longitude,
         user: {
           connect: {
             id: user?.id,

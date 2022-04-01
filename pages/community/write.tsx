@@ -7,6 +7,7 @@ import useMutation from "../../libs/client/useMutation";
 import { Post } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import useCoords from "@libs/client/useCoords";
 
 interface IFormProps {
   question: string;
@@ -18,14 +19,15 @@ interface IPostResponse {
 }
 
 const Write: NextPage = () => {
+  const { latitude, longitude } = useCoords();
   const { register, handleSubmit } = useForm<IFormProps>();
   const [uploadPost, { data, loading }] =
     useMutation<IPostResponse>("/api/posts");
   const router = useRouter();
 
-  const onValid = (validData: IFormProps) => {
+  const onValid = (validForm: IFormProps) => {
     if (loading) return;
-    uploadPost(validData);
+    uploadPost({ ...validForm, latitude, longitude });
   };
 
   useEffect(() => {
