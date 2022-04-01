@@ -17,7 +17,6 @@ interface IProductsResponse {
 }
 
 const Home: NextPage = () => {
-  const { user, isLoading } = useUser();
   const { data } = useSWR<IProductsResponse>("/api/products");
 
   return (
@@ -26,7 +25,7 @@ const Home: NextPage = () => {
         <Head>
           <title>Home</title>
         </Head>
-        {data?.products.map((product) => (
+        {data?.products?.map((product) => (
           <Item
             id={product.id}
             title={product.name}

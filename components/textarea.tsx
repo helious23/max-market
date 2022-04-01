@@ -5,7 +5,6 @@ interface ITextAreaProps {
   name?: string;
   register: UseFormRegisterReturn;
   required: boolean;
-
   placeholder: string;
 }
 
