@@ -28,13 +28,16 @@ const ItemDetail: NextPage = () => {
   const { data, mutate: boundMutate } = useSWR<IItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
-  const [toggleFav] = useMutation(`/api/products/${router.query.id}/fav`);
+  const [toggleFav, loading] = useMutation(
+    `/api/products/${router.query.id}/fav`
+  );
+
   const onFavClick = () => {
     if (!data) return;
     boundMutate((prev) => prev && { ...prev, isLiked: !prev.isLiked }, false);
     // mutate("/api/users/me", (prev: any) => ({ ok: !prev.ok }), false); // 다른 component 의 cache 를 수정
     // mutate("/api/users/me") // 단순 refetch
-    toggleFav({});
+    if (!loading) toggleFav({});
   };
 
   return (

@@ -11,18 +11,17 @@ const handler = async (
     query: { id },
     session: { user },
   } = req;
-
-  const product = await client.product.findUnique({
+  const post = await client.post.findUnique({
     where: {
       id: +id.toString(),
     },
   });
-  if (!product)
-    res.status(404).json({ ok: false, error: "상품이 존재하지 않습니다" });
+  if (!post)
+    res.status(404).json({ ok: false, error: "질문이 존재하지 않습니다" });
 
-  const alreadyExists = await client.fav.findFirst({
+  const alreadyExists = await client.wondering.findFirst({
     where: {
-      productId: +id.toString(),
+      postId: +id.toString(),
       userId: user?.id,
     },
     select: {
@@ -30,20 +29,20 @@ const handler = async (
     },
   });
   if (alreadyExists) {
-    await client.fav.delete({
+    await client.wondering.delete({
       where: {
         id: alreadyExists.id,
       },
     });
   } else {
-    await client.fav.create({
+    await client.wondering.create({
       data: {
         user: {
           connect: {
             id: user?.id,
           },
         },
-        product: {
+        post: {
           connect: {
             id: +id.toString(),
           },

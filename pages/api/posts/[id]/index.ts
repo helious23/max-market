@@ -42,12 +42,26 @@ const handler = async (
       },
     },
   });
+
   if (!post)
     res.status(404).json({ ok: false, error: "질문을 찾을 수 없습니다" });
+
+  const isWondering = Boolean(
+    await client.wondering.findFirst({
+      where: {
+        postId: post?.id,
+        userId: user?.id,
+      },
+      select: {
+        id: true,
+      },
+    })
+  );
 
   res.json({
     ok: true,
     post,
+    isWondering,
   });
 };
 
