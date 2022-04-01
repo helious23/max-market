@@ -30,7 +30,10 @@ const handler = async (
         },
       },
       answers: {
-        include: {
+        select: {
+          id: true,
+          answer: true,
+          createdAt: true,
           user: {
             select: {
               id: true,

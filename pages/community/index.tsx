@@ -10,13 +10,13 @@ interface PostWithAnswerWondering extends Post {
   user: User;
 }
 
-interface IPostResponse {
+interface IPostsResponse {
   ok: boolean;
   posts: PostWithAnswerWondering[];
 }
 
 const Community: NextPage = () => {
-  const { data } = useSWR<IPostResponse>("/api/posts");
+  const { data } = useSWR<IPostsResponse>("/api/posts");
 
   return (
     <Layout title="동네생활" hasTabBar>

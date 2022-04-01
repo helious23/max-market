@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import useMutation from "../../libs/client/useMutation";
 import { cls } from "../../libs/client/utils";
+import useUser from "../../libs/client/useUser";
 
 interface IAnswerFormProps {
   answer: string;
@@ -33,10 +34,11 @@ interface ICommunityPostResponse {
 
 interface IAnswerResponse {
   ok: boolean;
-  answer: Answer;
+  answer: AnswerWithUser;
 }
 
 const CommunityPostDetail: NextPage = () => {
+  const { user } = useUser();
   const router = useRouter();
   const { register, handleSubmit, reset } = useForm<IAnswerFormProps>();
   const { data, mutate } = useSWR<ICommunityPostResponse>(
@@ -85,8 +87,25 @@ const CommunityPostDetail: NextPage = () => {
   useEffect(() => {
     if (answerData && answerData.ok) {
       reset();
+      // if (!data) return;
+      // console.log(data);
+      // mutate(
+      //   {
+      //     ...data,
+      //     post: {
+      //       ...data.post,
+      //       answers: [...data.post.answers, { ...answerData.answer, user }],
+      //       _count: {
+      //         ...data.post._count,
+      //         answers: data.post._count.answers + 1,
+      //       },
+      //     },
+      //   },
+      //   false
+      // );
+      mutate();
     }
-  }, [answerData, reset]);
+  }, [answerData, reset, mutate]);
 
   return (
     <Layout title="동네질문" canGoBack>
