@@ -52,9 +52,10 @@ export default function Enter() {
   };
 
   const router = useRouter();
+  console.log(tokenData);
 
   useEffect(() => {
-    if (tokenData?.ok) {
+    if (tokenData && tokenData?.ok) {
       router.push("/");
     }
   }, [tokenData, router]);
