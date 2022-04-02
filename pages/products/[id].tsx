@@ -28,22 +28,22 @@ const ItemDetail: NextPage = () => {
   const { data, mutate: boundMutate } = useSWR<IItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
-  const [toggleFav, loading] = useMutation(
+  const [toggleFav, { loading }] = useMutation(
     `/api/products/${router.query.id}/fav`
   );
 
   const onFavClick = () => {
+    if (!loading) toggleFav({});
     if (!data) return;
     boundMutate((prev) => prev && { ...prev, isLiked: !prev.isLiked }, false);
     // mutate("/api/users/me", (prev: any) => ({ ok: !prev.ok }), false); // 다른 component 의 cache 를 수정
     // mutate("/api/users/me") // 단순 refetch
-    if (!loading) toggleFav({});
   };
 
   return (
-    <Layout title={data?.product.name || "상세 정보"} canGoBack>
+    <Layout title={data?.product?.name || "상세 정보"} canGoBack>
       <Head>
-        <title>{data?.product.name || "상세 정보"}</title>
+        <title>{data?.product?.name || "상세 정보"}</title>
       </Head>
       <div className="px-4">
         <div className="mb-8">
@@ -63,13 +63,13 @@ const ItemDetail: NextPage = () => {
           </Link>
           <div className="mt-5">
             <h1 className="text-3xl font-bold text-gray-900">
-              {data?.product.name}
+              {data?.product?.name}
             </h1>
             <span className="block mt-3 text-3xl text-gray-900">
               {data?.product?.price?.toLocaleString()} 원
             </span>
             <p className="my-6 text-base text-gray-700">
-              {data?.product.description}
+              {data?.product?.description}
             </p>
             <div className="flex items-center justify-between space-x-2">
               <Button text="판매자와 대화하기" large />

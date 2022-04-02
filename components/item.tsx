@@ -4,11 +4,10 @@ interface IItemProps {
   title: string;
   id: number;
   price: number;
-  comments: number;
   hearts: number;
 }
 
-const Item: React.FC<IItemProps> = ({ title, id, price, comments, hearts }) => {
+const Item: React.FC<IItemProps> = ({ title, id, price, hearts }) => {
   return (
     <Link key={id} href={`/products/${id}`}>
       <a className="flex justify-between px-4 pb-4 border-b cursor-pointer">
@@ -39,7 +38,7 @@ const Item: React.FC<IItemProps> = ({ title, id, price, comments, hearts }) => {
             </svg>
             <span>{hearts}</span>
           </div>
-          <div className="flex items-center space-x-0.5 text-sm text-gray-600">
+          {/* <div className="flex items-center space-x-0.5 text-sm text-gray-600">
             <svg
               className="w-4 h-4"
               fill="none"
@@ -55,7 +54,7 @@ const Item: React.FC<IItemProps> = ({ title, id, price, comments, hearts }) => {
               ></path>
             </svg>
             <span>{comments}</span>
-          </div>
+          </div> */}
         </div>
       </a>
     </Link>

@@ -29,6 +29,7 @@ const handler = async (
       id: true,
     },
   });
+
   if (alreadyExists) {
     await client.fav.delete({
       where: {

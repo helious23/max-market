@@ -1,21 +1,12 @@
 import { NextPage } from "next";
-import Item from "@components/item";
 import Layout from "@components/layout";
+import ProductList from "@components/product-list";
 
 const Bought: NextPage = () => {
   return (
     <Layout title="구매내역" canGoBack>
-      <div className="flex flex-col space-y-5 pb-5">
-        {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, i) => (
-          <Item
-            id={i}
-            title={"New iPhone 14"}
-            price={50000}
-            comments={3}
-            hearts={5}
-            key={i}
-          />
-        ))}
+      <div className="flex flex-col pb-5 space-y-5">
+        <ProductList kind="purchases" />
       </div>
     </Layout>
   );

@@ -7,7 +7,7 @@ import Head from "next/head";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
 
-interface ProductWithFavCount extends Product {
+export interface ProductWithFavCount extends Product {
   _count: { favs: number };
 }
 
@@ -30,7 +30,6 @@ const Home: NextPage = () => {
             id={product.id}
             title={product.name}
             price={product.price}
-            comments={3}
             hearts={product._count.favs}
             key={product.id}
           />

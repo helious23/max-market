@@ -20,7 +20,15 @@ const handler = async (
         kind,
       },
       include: {
-        product: true,
+        product: {
+          include: {
+            _count: {
+              select: {
+                favs: true,
+              },
+            },
+          },
+        },
       },
     });
     return item;
