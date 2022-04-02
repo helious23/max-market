@@ -3,6 +3,7 @@ import { cls } from "@libs/client/utils";
 interface IButtonProps {
   large?: boolean;
   text: string;
+  loading: boolean;
   [key: string]: any;
 }
 
@@ -10,6 +11,7 @@ const Button: React.FC<IButtonProps> = ({
   large = false,
   text,
   onClick,
+  loading,
   ...rest
 }) => {
   return (
@@ -20,7 +22,7 @@ const Button: React.FC<IButtonProps> = ({
         large ? "py-3 text-base" : "py-2 text-sm"
       )}
     >
-      {text}
+      {loading ? "로딩중..." : text}
     </button>
   );
 };

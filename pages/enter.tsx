@@ -7,6 +7,7 @@ import Layout from "@components/layout";
 import { useForm } from "react-hook-form";
 import useMutation from "@libs/client/useMutation";
 import { useRouter } from "next/router";
+import useUser from "../libs/client/useUser";
 
 interface IFormProps {
   email?: string;
@@ -52,10 +53,9 @@ export default function Enter() {
   };
 
   const router = useRouter();
-  console.log(tokenData);
 
   useEffect(() => {
-    if (tokenData && tokenData?.ok) {
+    if (tokenData?.ok) {
       router.push("/");
     }
   }, [tokenData, router]);
