@@ -2,26 +2,33 @@ import { NextPage } from "next";
 import Link from "next/link";
 import FloatingButton from "@components/floating-button";
 import Layout from "@components/layout";
+import { Stream } from "@prisma/client";
+import useSWR from "swr";
 
-const Stream: NextPage = () => {
+interface StreamsResponse {
+  ok: boolean;
+  streams: Stream[];
+}
+
+const Streams: NextPage = () => {
+  const { data } = useSWR<StreamsResponse>(`/api/streams`);
+
   return (
     <Layout title="라이브" hasTabBar>
-      <div className="space-y-4 divide-y-2 pb-12">
-        {[1, 1, 1, 1, 1].map((_, i) => (
-          <div className="px-4 pt-4" key={i}>
-            <Link href={`/streams/${i}`}>
-              <a>
-                <div className="aspect-video w-full rounded-md bg-slate-300 shadow-sm" />
-                <h3 className="mt-2 text-lg text-gray-700">
-                  락토핏 유산균 6개월분 한달에 9,900원!
-                </h3>
-              </a>
-            </Link>
-          </div>
+      <div className="pb-12 space-y-4 divide-y-2">
+        {data?.streams.map((stream) => (
+          <Link href={`/streams/${stream.id}`} key={`Stream:${stream.id}`}>
+            <a className="px-4 pt-4">
+              <div className="w-full rounded-md shadow-sm aspect-video bg-slate-300" />
+              <h3 className="mt-2 text-xl font-medium text-gray-700">
+                {stream.name}
+              </h3>
+            </a>
+          </Link>
         ))}
         <FloatingButton href="/streams/create">
           <svg
-            className="h-6 w-6"
+            className="w-6 h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -40,4 +47,4 @@ const Stream: NextPage = () => {
   );
 };
 
-export default Stream;
+export default Streams;

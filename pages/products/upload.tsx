@@ -87,7 +87,7 @@ const Upload: NextPage = () => {
           placeholder="설명을 입력하세요"
           required
         />
-        <Button text={loading ? "로딩중..." : "물건 올리기"} />
+        <Button text="물건 올리기" loading={loading} />
       </form>
     </Layout>
   );

@@ -28,12 +28,12 @@ const ItemDetail: NextPage = () => {
   const { data, mutate: boundMutate } = useSWR<IItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
-  const [toggleFav, { loading }] = useMutation(
+  const [toggleFav, { loading: favLoading }] = useMutation(
     `/api/products/${router.query.id}/fav`
   );
 
   const onFavClick = () => {
-    if (!loading) toggleFav({});
+    if (!favLoading) toggleFav({});
     if (!data) return;
     boundMutate((prev) => prev && { ...prev, isLiked: !prev.isLiked }, false);
     // mutate("/api/users/me", (prev: any) => ({ ok: !prev.ok }), false); // 다른 component 의 cache 를 수정
@@ -72,7 +72,7 @@ const ItemDetail: NextPage = () => {
               {data?.product?.description}
             </p>
             <div className="flex items-center justify-between space-x-2">
-              <Button text="판매자와 대화하기" large />
+              <Button loading={false} text="판매자와 대화하기" large />
               <button
                 onClick={onFavClick}
                 className={cls(

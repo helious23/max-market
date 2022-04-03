@@ -25,15 +25,19 @@ const Home: NextPage = () => {
         <Head>
           <title>Home</title>
         </Head>
-        {data?.products?.map((product) => (
-          <Item
-            id={product.id}
-            title={product.name}
-            price={product.price}
-            hearts={product._count.favs}
-            key={product.id}
-          />
-        ))}
+        {data ? (
+          data?.products?.map((product) => (
+            <Item
+              id={product.id}
+              title={product.name}
+              price={product.price}
+              hearts={product._count.favs}
+              key={product.id}
+            />
+          ))
+        ) : (
+          <span className="block text-center">로딩중...</span>
+        )}
         <FloatingButton href="/products/upload">
           <svg
             className="w-6 h-6"

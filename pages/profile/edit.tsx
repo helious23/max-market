@@ -47,6 +47,7 @@ const EditProfile: NextPage = () => {
       });
     }
     editProfile({ email, phone, name });
+    alert("프로필이 수정되었습니다.");
   };
 
   useEffect(() => {
