@@ -29,7 +29,7 @@ const handler = async (
     },
   });
 
-  res.json({ ok: true, newMessage });
+  res.json({ ok: true, message: newMessage });
 };
 
 export default withApiSession(withHandler({ methods: ["POST"], handler }));

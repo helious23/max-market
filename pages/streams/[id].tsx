@@ -9,8 +9,13 @@ import useMutation from "@libs/client/useMutation";
 import useUser from "../../libs/client/useUser";
 import { useEffect } from "react";
 
-interface MessageWithUser extends MessageType {
-  user: User;
+interface MessageWithUser {
+  user: {
+    avatar?: string;
+    id: number;
+  };
+  id: number;
+  message: string;
 }
 
 interface StreamWithMessages extends Stream {
@@ -36,7 +41,10 @@ const StreamDetail: NextPage = () => {
   const { user } = useUser();
   const { register, handleSubmit, reset } = useForm<IMessageFormProps>();
   const { data, mutate } = useSWR<StreamResponse>(
-    router.query.id ? `/api/streams/${router.query.id}` : null
+    router.query.id ? `/api/streams/${router.query.id}` : null,
+    {
+      refreshInterval: 1000,
+    }
   );
 
   const [sendMessage, { loading, data: sendMessageData }] =
@@ -44,14 +52,29 @@ const StreamDetail: NextPage = () => {
 
   const onValid = (form: IMessageFormProps) => {
     if (loading) return;
-    sendMessage(form);
     reset();
+    mutate(
+      (prev) =>
+        prev &&
+        ({
+          ...prev,
+          stream: {
+            ...prev.stream,
+            messages: [
+              ...prev.stream.messages,
+              {
+                id: prev.stream.messages.length + 1,
+                message: form.message,
+                user: { ...user },
+              },
+            ],
+          },
+        } as any),
+      false
+    );
+    // sendMessage(form);
   };
-  useEffect(() => {
-    if (sendMessageData && sendMessageData.ok) {
-      mutate();
-    }
-  }, [sendMessageData, mutate]);
+
   return (
     <Layout title={data?.stream?.name || "라이브"} canGoBack>
       {data ? (
