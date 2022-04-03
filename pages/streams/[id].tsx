@@ -3,18 +3,38 @@ import Layout from "@components/layout";
 import Message from "@components/message";
 import useSWR from "swr";
 import { useRouter } from "next/router";
-import { Stream } from "@prisma/client";
+import { Stream, Message as MessageType } from "@prisma/client";
+import { useForm } from "react-hook-form";
+import useMutation from "@libs/client/useMutation";
 
 interface StreamResponse {
   ok: boolean;
   stream: Stream;
 }
 
+interface IMessageFormProps {
+  message: string;
+}
+
+interface MessageResponse {
+  ok: boolean;
+  message: MessageType;
+}
+
 const StreamDetail: NextPage = () => {
   const router = useRouter();
+  const { register, handleSubmit, reset } = useForm<IMessageFormProps>();
   const { data } = useSWR<StreamResponse>(
     router.query.id ? `/api/streams/${router.query.id}` : null
   );
+
+  const [sendMessage, { loading, data: sendMessageData }] =
+    useMutation<MessageResponse>(`/api/streams/${router.query.id}/messages`);
+  const onValid = (form: IMessageFormProps) => {
+    if (loading) return;
+    sendMessage(form);
+    reset();
+  };
 
   return (
     <Layout title={data?.stream?.name || "라이브"} canGoBack>
@@ -54,9 +74,13 @@ const StreamDetail: NextPage = () => {
             </div>
           </div>
           <div className="fixed inset-x-0 bottom-0 py-2 bg-white">
-            <div className="relative flex items-center w-full max-w-md mx-auto">
+            <form
+              className="relative flex items-center w-full max-w-md mx-auto"
+              onSubmit={handleSubmit(onValid)}
+            >
               <input
                 type="text"
+                {...register("message", { required: true })}
                 className="w-full pr-12 border-gray-300 rounded-full shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500"
               />
               <div className="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
@@ -64,7 +88,7 @@ const StreamDetail: NextPage = () => {
                   &rarr;
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       ) : (
