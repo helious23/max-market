@@ -4,23 +4,39 @@ import FloatingButton from "@components/floating-button";
 import Layout from "@components/layout";
 import { Stream } from "@prisma/client";
 import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
+import { useInfiniteScroll } from "../../libs/client/useInfiniteScroll";
+import { useEffect } from "react";
 
 interface StreamsResponse {
   ok: boolean;
   streams: Stream[];
+  pages: number;
 }
 
+const getKey = (pageIndex: number, previousPageData: StreamsResponse) => {
+  if (pageIndex === 0) return `/api/streams?page=1`;
+  if (pageIndex + 1 > previousPageData.pages) return null;
+  return `/api/streams?page=${pageIndex + 1}`;
+};
+
 const Streams: NextPage = () => {
-  const { data } = useSWR<StreamsResponse>(`/api/streams`);
+  const { data, setSize } = useSWRInfinite<StreamsResponse>(getKey);
+  const streams = data ? data.flatMap((item) => item.streams) : [];
+  const page = useInfiniteScroll();
+
+  useEffect(() => {
+    setSize(page);
+  }, [setSize, page]);
 
   return (
     <Layout title="라이브" hasTabBar>
       <div className="pb-12 space-y-4 divide-y-2">
-        {data?.streams.map((stream) => (
+        {streams.map((stream) => (
           <Link href={`/streams/${stream.id}`} key={`Stream:${stream.id}`}>
-            <a className="px-4 pt-4">
+            <a className="block px-4 pt-8">
               <div className="w-full rounded-md shadow-sm aspect-video bg-slate-300" />
-              <h3 className="mt-2 text-xl font-medium text-gray-700">
+              <h3 className="mt-2 text-xl font-medium text-gray-700 ">
                 {stream.name}
               </h3>
             </a>

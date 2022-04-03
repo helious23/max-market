@@ -8,10 +8,21 @@ const handler = async (
   res: NextApiResponse<ResponseType>
 ) => {
   if (req.method === "GET") {
-    const streams = await client.stream.findMany({});
+    const {
+      query: { page },
+    } = req;
+    const streams = await client.stream.findMany({
+      take: 10,
+      skip: (+page - 1) * 10,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    const streamCount = await client.stream.count();
     res.json({
       ok: true,
       streams,
+      pages: Math.ceil(streamCount / 10),
     });
   }
   if (req.method === "POST") {

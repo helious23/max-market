@@ -6,19 +6,36 @@ import useUser from "../libs/client/useUser";
 import Head from "next/head";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
+import useSWRInfinite from "swr/infinite";
+import { useInfiniteScroll } from "@libs/client/useInfiniteScroll";
+import { useEffect } from "react";
 
 export interface ProductWithFavCount extends Product {
   _count: { favs: number };
 }
 
-interface IProductsResponse {
+interface ProductsResponse {
   ok: boolean;
   products: ProductWithFavCount[];
+  pages: number;
 }
 
+const getKey = (pageIndex: number, previousPageData: ProductsResponse) => {
+  if (pageIndex === 0) return `/api/products?page=1`;
+  if (pageIndex + 1 > previousPageData.pages) return null;
+  return `/api/products?page=${pageIndex + 1}`;
+};
+
 const Home: NextPage = () => {
-  const { data } = useSWR<IProductsResponse>("/api/products");
+  const { data, setSize } = useSWRInfinite<ProductsResponse>(getKey);
+  const products = data ? data.flatMap((item) => item.products) : [];
+  const page = useInfiniteScroll();
+  useEffect(() => {
+    setSize(page);
+  }, [setSize, page]);
+
   const { user, isLoading } = useUser();
+
   return (
     <Layout title="홈" hasTabBar>
       <div className="flex flex-col mb-5 space-y-5">
@@ -26,7 +43,7 @@ const Home: NextPage = () => {
           <title>Home</title>
         </Head>
         {data ? (
-          data?.products?.map((product) => (
+          products?.map((product) => (
             <Item
               id={product.id}
               title={product.name}
