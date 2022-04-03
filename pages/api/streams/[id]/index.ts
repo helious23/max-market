@@ -14,6 +14,20 @@ const handler = async (
     where: {
       id: +id.toString(),
     },
+    include: {
+      messages: {
+        select: {
+          id: true,
+          message: true,
+          user: {
+            select: {
+              id: true,
+              avatar: true,
+            },
+          },
+        },
+      },
+    },
   });
   if (!stream)
     return res.status(404).json({ ok: false, error: "찾을 수 없습니다" });

@@ -3,13 +3,23 @@ import Layout from "@components/layout";
 import Message from "@components/message";
 import useSWR from "swr";
 import { useRouter } from "next/router";
-import { Stream, Message as MessageType } from "@prisma/client";
+import { Stream, Message as MessageType, User } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import useMutation from "@libs/client/useMutation";
+import useUser from "../../libs/client/useUser";
+import { useEffect } from "react";
+
+interface MessageWithUser extends MessageType {
+  user: User;
+}
+
+interface StreamWithMessages extends Stream {
+  messages: MessageWithUser[];
+}
 
 interface StreamResponse {
   ok: boolean;
-  stream: Stream;
+  stream: StreamWithMessages;
 }
 
 interface IMessageFormProps {
@@ -23,19 +33,25 @@ interface MessageResponse {
 
 const StreamDetail: NextPage = () => {
   const router = useRouter();
+  const { user } = useUser();
   const { register, handleSubmit, reset } = useForm<IMessageFormProps>();
-  const { data } = useSWR<StreamResponse>(
+  const { data, mutate } = useSWR<StreamResponse>(
     router.query.id ? `/api/streams/${router.query.id}` : null
   );
 
   const [sendMessage, { loading, data: sendMessageData }] =
     useMutation<MessageResponse>(`/api/streams/${router.query.id}/messages`);
+
   const onValid = (form: IMessageFormProps) => {
     if (loading) return;
     sendMessage(form);
     reset();
   };
-
+  useEffect(() => {
+    if (sendMessageData && sendMessageData.ok) {
+      mutate();
+    }
+  }, [sendMessageData, mutate]);
   return (
     <Layout title={data?.stream?.name || "라이브"} canGoBack>
       {data ? (
@@ -53,24 +69,13 @@ const StreamDetail: NextPage = () => {
           <div>
             <h2 className="text-2xl font-bold text-gray-900">라이브 채팅</h2>
             <div className="h-[50vh] space-y-4 overflow-y-scroll py-10  px-4 pb-16 scrollbar-hide">
-              <Message message="Hi how much are you selling them for?" />
-              <Message message="I want ￦20,000" reversed />
-              <Message message="Hi how much are you selling them for?" />
-              <Message message="I want ￦20,000" reversed />
-              <Message message="Hi how much are you selling them for?" />
-              <Message message="I want ￦20,000" reversed />
-              <Message message="Hi how much are you selling them for?" />
-              <Message message="I want ￦20,000" reversed />
-              <Message message="Hi how much are you selling them for?" />
-              <Message message="I want ￦20,000" reversed />
-              <Message message="Hi how much are you selling them for?" />
-              <Message message="I want ￦20,000" reversed />
-              <Message message="Hi how much are you selling them for?" />
-              <Message message="I want ￦20,000" reversed />
-              <Message message="Hi how much are you selling them for?" />
-              <Message message="I want ￦20,000" reversed />
-              <Message message="Hi how much are you selling them for?" />
-              <Message message="I want ￦20,000" reversed />
+              {data.stream.messages.map((message) => (
+                <Message
+                  message={message.message}
+                  reversed={message.user.id === user?.id}
+                  key={`Message:${message.id}`}
+                />
+              ))}
             </div>
           </div>
           <div className="fixed inset-x-0 bottom-0 py-2 bg-white">
