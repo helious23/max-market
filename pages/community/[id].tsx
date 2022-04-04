@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import useMutation from "../../libs/client/useMutation";
 import { cls, makeImageUrl } from "../../libs/client/utils";
 import useUser from "../../libs/client/useUser";
+import Image from "next/image";
 
 interface IAnswerFormProps {
   answer: string;
@@ -116,9 +117,12 @@ const CommunityPostDetail: NextPage = () => {
         <Link href={`/profile/${data?.post?.userId}`}>
           <a className="flex items-center px-4 pb-3 mb-3 space-x-3 border-b">
             {data?.post?.user?.avatar ? (
-              <img
+              <Image
                 src={makeImageUrl(data.post.user.avatar, "avatar")}
                 className="w-10 h-10 rounded-full bg-slate-300"
+                width={48}
+                height={48}
+                alt="avatar"
               />
             ) : (
               <div className="w-10 h-10 rounded-full bg-slate-300" />
@@ -188,9 +192,12 @@ const CommunityPostDetail: NextPage = () => {
               key={`Answer:${answer.id}`}
             >
               {answer.user.avatar ? (
-                <img
+                <Image
                   src={makeImageUrl(answer.user.avatar, "avatar")}
                   className="w-8 h-8 rounded-full bg-slate-200"
+                  width={48}
+                  height={48}
+                  alt="avatar"
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-slate-200" />

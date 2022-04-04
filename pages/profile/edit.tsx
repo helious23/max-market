@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import useMutation from "../../libs/client/useMutation";
 import { makeImageUrl } from "@libs/client/utils";
+import Image from "next/image";
 
 interface EditProfileForm {
   name?: string;
@@ -107,9 +108,12 @@ const EditProfile: NextPage = () => {
       <form className="px-4 space-y-4" onSubmit={handleSubmit(onValid)}>
         <div className="flex items-center space-x-3">
           {avatarPreview ? (
-            <img
+            <Image
               src={avatarPreview}
               className="rounded-full h-14 w-14 bg-slate-300"
+              width={48}
+              height={48}
+              alt="avatar"
             />
           ) : (
             <div className="rounded-full h-14 w-14 bg-slate-300"></div>

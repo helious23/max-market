@@ -8,8 +8,6 @@ import { Product } from "@prisma/client";
 import useSWRInfinite from "swr/infinite";
 import { useInfiniteScroll } from "@libs/client/useInfiniteScroll";
 import { useEffect } from "react";
-import eggTart from "../public/5.jpeg";
-import Image from "next/image";
 
 export interface ProductWithFavCount extends Product {
   _count: { favs: number };
@@ -74,7 +72,6 @@ const Home: NextPage = () => {
             />
           </svg>
         </FloatingButton>
-        <Image src={eggTart} placeholder="blur" alt="eggTart" quality={75} />
       </div>
     </Layout>
   );

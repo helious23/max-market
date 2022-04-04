@@ -10,6 +10,7 @@ import useMutation from "../../libs/client/useMutation";
 import { cls } from "@libs/client/utils";
 import useUser from "@libs/client/useUser";
 import { makeImageUrl } from "../../libs/client/utils";
+import Image from "next/image";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -49,19 +50,26 @@ const ItemDetail: NextPage = () => {
       <div className="px-4">
         <div className="mb-8">
           {data?.product?.image ? (
-            <img
-              src={makeImageUrl(data.product.image, "product")}
-              className="h-96 bg-slate-300"
-            />
+            <div className="relative h-96">
+              <Image
+                src={makeImageUrl(data.product.image, "product")}
+                className="object-cover bg-slate-300"
+                alt="product"
+                layout="fill"
+              />
+            </div>
           ) : (
             <div className="h-96 bg-slate-300" />
           )}
           <Link href={`/users/profiles/${data?.product?.user?.id}`}>
             <a className="flex items-center py-3 space-x-3 border-t border-b cursor-pointer">
               {data?.product?.user?.avatar ? (
-                <img
+                <Image
                   src={makeImageUrl(data.product.user.avatar, "avatar")}
                   className="w-12 h-12 rounded-full bg-slate-300"
+                  width={48}
+                  height={48}
+                  alt="avatar"
                 />
               ) : (
                 <div className="w-12 h-12 rounded-full bg-slate-300" />

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { makeImageUrl } from "../libs/client/utils";
 
@@ -14,9 +15,12 @@ const Item: React.FC<IItemProps> = ({ title, id, price, hearts, image }) => {
     <Link key={id} href={`/products/${id}`}>
       <a className="flex justify-between px-4 pb-4 border-b cursor-pointer">
         <div className="flex space-x-4">
-          <img
+          <Image
             src={makeImageUrl(image, "list")}
             className="w-20 h-20 bg-gray-400 rounded-md"
+            alt="productList"
+            width={80}
+            height={80}
           />
           <div className="flex flex-col pt-2">
             <h3 className="text-sm font-medium text-gray-900">{title}</h3>

@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { Review, User } from "@prisma/client";
 import { cls } from "@libs/client/utils";
 import { makeImageUrl } from "../../libs/client/utils";
+import Image from "next/image";
 
 interface ReviewWithUser extends Review {
   createdBy: User;
@@ -25,9 +26,12 @@ const Profile: NextPage = () => {
       <div className="px-4">
         <div className="flex items-center space-x-3">
           {user?.avatar ? (
-            <img
+            <Image
               src={makeImageUrl(user.avatar, "avatar")}
               className="w-16 h-16 rounded-full bg-slate-300"
+              width={48}
+              height={48}
+              alt="avatar"
             />
           ) : (
             <div className="w-16 h-16 rounded-full bg-slate-300" />
@@ -114,9 +118,12 @@ const Profile: NextPage = () => {
           <div className="mt-12" key={`Review:${review.id}`}>
             <div className="flex items-center space-x-4">
               {review.createdBy.avatar ? (
-                <img
+                <Image
                   src={makeImageUrl(review.createdBy.avatar, "avatar")}
                   className="w-12 h-12 rounded-full bg-slate-300"
+                  width={48}
+                  height={48}
+                  alt="avatar"
                 />
               ) : (
                 <div className="w-12 h-12 rounded-full bg-slate-300" />
