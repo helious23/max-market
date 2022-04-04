@@ -6,6 +6,7 @@ import useUser from "../../libs/client/useUser";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import useMutation from "../../libs/client/useMutation";
+import { makeImageUrl } from "@libs/client/utils";
 
 interface EditProfileForm {
   name?: string;
@@ -40,10 +41,7 @@ const EditProfile: NextPage = () => {
     if (user?.name) setValue("name", user.name);
     if (user?.email) setValue("email", user.email);
     if (user?.phone) setValue("phone", user.phone);
-    if (user?.avatar)
-      setAvatarPreview(
-        `https://imagedelivery.net/d55zduLA8eIYW_0FqFpUmQ/${user.avatar}/avatar`
-      );
+    if (user?.avatar) setAvatarPreview(makeImageUrl(user.avatar, "avatar"));
   }, [user, setValue]);
 
   const onValid = async ({ email, phone, name, avatar }: EditProfileForm) => {
@@ -57,7 +55,7 @@ const EditProfile: NextPage = () => {
       const { uploadURL } = await (await fetch(`/api/files`)).json();
 
       const form = new FormData();
-      form.append("file", avatar[0], `${user.id}-avatar`);
+      form.append("file", avatar[0], `${Date.now()}-${user.id}-avatar`);
 
       const {
         result: { id },

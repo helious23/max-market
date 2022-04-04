@@ -50,6 +50,7 @@ const Home: NextPage = () => {
               price={product?.price}
               hearts={product?._count.favs}
               key={product?.id}
+              image={product?.image}
             />
           ))
         ) : (

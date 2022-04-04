@@ -9,6 +9,7 @@ import Head from "next/head";
 import useMutation from "../../libs/client/useMutation";
 import { cls } from "@libs/client/utils";
 import useUser from "@libs/client/useUser";
+import { makeImageUrl } from "../../libs/client/utils";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -47,10 +48,24 @@ const ItemDetail: NextPage = () => {
       </Head>
       <div className="px-4">
         <div className="mb-8">
-          <div className="h-96 bg-slate-300" />
+          {data?.product?.image ? (
+            <img
+              src={makeImageUrl(data.product.image, "product")}
+              className="h-96 bg-slate-300"
+            />
+          ) : (
+            <div className="h-96 bg-slate-300" />
+          )}
           <Link href={`/users/profiles/${data?.product?.user?.id}`}>
             <a className="flex items-center py-3 space-x-3 border-t border-b cursor-pointer">
-              <div className="w-12 h-12 rounded-full bg-slate-300" />
+              {data?.product?.user?.avatar ? (
+                <img
+                  src={makeImageUrl(data.product.user.avatar, "avatar")}
+                  className="w-12 h-12 rounded-full bg-slate-300"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-slate-300" />
+              )}
               <div>
                 <p className="text-sm font-medium text-gray-700">
                   {data?.product?.user?.name}

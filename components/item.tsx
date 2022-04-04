@@ -1,18 +1,23 @@
 import Link from "next/link";
+import { makeImageUrl } from "../libs/client/utils";
 
 interface IItemProps {
   title: string;
   id: number;
   price: number;
   hearts: number;
+  image: string;
 }
 
-const Item: React.FC<IItemProps> = ({ title, id, price, hearts }) => {
+const Item: React.FC<IItemProps> = ({ title, id, price, hearts, image }) => {
   return (
     <Link key={id} href={`/products/${id}`}>
       <a className="flex justify-between px-4 pb-4 border-b cursor-pointer">
         <div className="flex space-x-4">
-          <div className="w-20 h-20 bg-gray-400 rounded-md" />
+          <img
+            src={makeImageUrl(image, "list")}
+            className="w-20 h-20 bg-gray-400 rounded-md"
+          />
           <div className="flex flex-col pt-2">
             <h3 className="text-sm font-medium text-gray-900">{title}</h3>
             <span className="mt-1 font-medium text-gray-900">
