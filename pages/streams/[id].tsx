@@ -92,7 +92,7 @@ const StreamDetail: NextPage = () => {
           <div>
             <h2 className="text-2xl font-bold text-gray-900">라이브 채팅</h2>
             <div className="h-[50vh] space-y-4 overflow-y-scroll py-10  px-4 pb-16 scrollbar-hide">
-              {data.stream.messages.map((message) => (
+              {data?.stream?.messages?.map((message) => (
                 <Message
                   message={message.message}
                   reversed={message.user.id === user?.id}
