@@ -9,7 +9,7 @@ import { Answer, Post, User } from "@prisma/client";
 import Link from "next/link";
 import { useEffect } from "react";
 import useMutation from "../../libs/client/useMutation";
-import { cls } from "../../libs/client/utils";
+import { cls, makeImageUrl } from "../../libs/client/utils";
 import useUser from "../../libs/client/useUser";
 
 interface IAnswerFormProps {
@@ -115,7 +115,14 @@ const CommunityPostDetail: NextPage = () => {
         </span>
         <Link href={`/profile/${data?.post?.userId}`}>
           <a className="flex items-center px-4 pb-3 mb-3 space-x-3 border-b">
-            <div className="w-10 h-10 rounded-full bg-slate-300" />
+            {data?.post?.user?.avatar ? (
+              <img
+                src={makeImageUrl(data.post.user.avatar, "avatar")}
+                className="w-10 h-10 rounded-full bg-slate-300"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-slate-300" />
+            )}
             <div>
               <p className="text-sm font-medium text-gray-700">
                 {data?.post?.user?.name}
@@ -180,7 +187,14 @@ const CommunityPostDetail: NextPage = () => {
               className="flex items-start space-x-3"
               key={`Answer:${answer.id}`}
             >
-              <div className="w-8 h-8 rounded-full bg-slate-200" />
+              {answer.user.avatar ? (
+                <img
+                  src={makeImageUrl(answer.user.avatar, "avatar")}
+                  className="w-8 h-8 rounded-full bg-slate-200"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-slate-200" />
+              )}
               <div>
                 <span className="block text-sm font-medium text-gray-700">
                   {answer.user.name}
@@ -199,7 +213,7 @@ const CommunityPostDetail: NextPage = () => {
             placeholder="질문에 대답해주세요!"
             required
           />
-          <Button text={answerLoading ? "업로드중..." : "대답하기"} />
+          <Button text={"대답하기"} loading={answerLoading} />
         </form>
       </div>
     </Layout>
