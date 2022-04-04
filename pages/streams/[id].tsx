@@ -7,7 +7,7 @@ import { Stream, Message as MessageType, User } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import useMutation from "@libs/client/useMutation";
 import useUser from "../../libs/client/useUser";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface MessageWithUser {
   user: {
@@ -40,6 +40,7 @@ const StreamDetail: NextPage = () => {
   const router = useRouter();
   const { user } = useUser();
   const { register, handleSubmit, reset } = useForm<IMessageFormProps>();
+  const [open, setOpen] = useState(false);
   const { data, mutate } = useSWR<StreamResponse>(
     router.query.id ? `/api/streams/${router.query.id}` : null,
     {
@@ -49,6 +50,10 @@ const StreamDetail: NextPage = () => {
 
   const [sendMessage, { loading, data: sendMessageData }] =
     useMutation<MessageResponse>(`/api/streams/${router.query.id}/messages`);
+
+  const toggleStreamingInfo = () => {
+    setOpen((prev) => !prev);
+  };
 
   const onValid = (form: IMessageFormProps) => {
     if (loading) return;
@@ -88,6 +93,33 @@ const StreamDetail: NextPage = () => {
               {data.stream?.price?.toLocaleString()} 원
             </span>
             <p className="my-6 text-gray-700 ">{data.stream?.description}</p>
+            {data.stream.userId === user?.id ? (
+              <div className="flex flex-col items-center justify-center">
+                <button
+                  onClick={toggleStreamingInfo}
+                  className="text-orange-500"
+                >
+                  스트리밍 URL 및 Key 보기
+                </button>
+                {open ? (
+                  <div className="flex flex-col p-5 my-5 space-y-3 overflow-scroll border border-orange-500 rounded-md scrollbar-hide">
+                    <span>스트리밍 정보</span>
+                    <span>
+                      <span> URL : </span>
+                      <span className="block text-sm">
+                        {data.stream.cloudflareUrl}
+                      </span>
+                    </span>
+                    <span>
+                      <span> Key : </span>
+                      <span className="block text-xs">
+                        {data.stream.cloudflareKey}
+                      </span>
+                    </span>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">라이브 채팅</h2>
