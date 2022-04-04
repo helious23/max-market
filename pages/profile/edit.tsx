@@ -42,16 +42,30 @@ const EditProfile: NextPage = () => {
     if (user?.phone) setValue("phone", user.phone);
   }, [user, setValue]);
 
-  const onValid = ({ email, phone, name, avatar }: EditProfileForm) => {
-    console.log(avatar);
-
-    // if (loading) return;
-    // if (email === "" && phone === "" && name === "") {
-    //   return setError("formErrors", {
-    //     message: "이메일, 휴대전화 번호 중 하나를 입력하세요",
-    //   });
-    // }
-    // editProfile({ email, phone, name });
+  const onValid = async ({ email, phone, name, avatar }: EditProfileForm) => {
+    if (loading) return;
+    if (email === "" && phone === "") {
+      return setError("formErrors", {
+        message: "이메일, 휴대전화 번호 중 하나를 입력하세요",
+      });
+    }
+    if (avatar && avatar.length > 0 && user) {
+      const { id, uploadURL } = await (await fetch(`/api/files`)).json();
+      const form = new FormData();
+      form.append("file", avatar[0], user.id + "");
+      await fetch(uploadURL, {
+        method: "POST",
+        body: form,
+      });
+      // editProfile({
+      //   email,
+      //   phone,
+      //   name,
+      //   // avatarURL: CF URL
+      // });
+    } else {
+      editProfile({ email, phone, name });
+    }
     // alert("프로필이 수정되었습니다.");
   };
 

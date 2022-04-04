@@ -42,14 +42,14 @@ const Home: NextPage = () => {
         <Head>
           <title>Home</title>
         </Head>
-        {data ? (
+        {products ? (
           products?.map((product) => (
             <Item
-              id={product.id}
-              title={product.name}
-              price={product.price}
-              hearts={product._count.favs}
-              key={product.id}
+              id={product?.id}
+              title={product?.name}
+              price={product?.price}
+              hearts={product?._count.favs}
+              key={product?.id}
             />
           ))
         ) : (

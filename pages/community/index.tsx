@@ -18,11 +18,14 @@ interface IPostsResponse {
 
 const Community: NextPage = () => {
   const { latitude, longitude } = useCoords();
+  console.log(latitude, longitude);
   const { data } = useSWR<IPostsResponse>(
     latitude && longitude
       ? `/api/posts?latitude=${latitude}&longitude=${longitude}`
       : null
   );
+
+  console.log(data);
 
   return (
     <Layout title="동네생활" hasTabBar>
