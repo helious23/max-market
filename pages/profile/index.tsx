@@ -23,7 +23,14 @@ const Profile: NextPage = () => {
     <Layout title="나의 프로필" hasTabBar>
       <div className="px-4">
         <div className="flex items-center space-x-3">
-          <div className="w-16 h-16 rounded-full bg-slate-300" />
+          {user?.avatar ? (
+            <img
+              src={`https://imagedelivery.net/d55zduLA8eIYW_0FqFpUmQ/${user.avatar}/public`}
+              className="w-16 h-16 rounded-full bg-slate-300"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-slate-300" />
+          )}
           <div className="flex flex-col">
             <span className="font-medium text-gray-900">{user?.name}</span>
             <Link href="/profile/edit">

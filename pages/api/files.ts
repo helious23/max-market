@@ -1,7 +1,6 @@
 import withHandler, { ResponseType } from "@libs/server/withHandler";
 import { withApiSession } from "@libs/server/withSession";
 import { NextApiRequest, NextApiResponse } from "next";
-import FormData from "form-data";
 import client from "@libs/server/client";
 
 const handler = async (
@@ -21,6 +20,7 @@ const handler = async (
       }
     )
   ).json();
+  console.log(response);
 
   res.json({
     ok: true,

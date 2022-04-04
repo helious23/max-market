@@ -40,6 +40,10 @@ const EditProfile: NextPage = () => {
     if (user?.name) setValue("name", user.name);
     if (user?.email) setValue("email", user.email);
     if (user?.phone) setValue("phone", user.phone);
+    if (user?.avatar)
+      setAvatarPreview(
+        `https://imagedelivery.net/d55zduLA8eIYW_0FqFpUmQ/${user.avatar}/public`
+      );
   }, [user, setValue]);
 
   const onValid = async ({ email, phone, name, avatar }: EditProfileForm) => {
@@ -50,23 +54,30 @@ const EditProfile: NextPage = () => {
       });
     }
     if (avatar && avatar.length > 0 && user) {
-      const { id, uploadURL } = await (await fetch(`/api/files`)).json();
+      const { uploadURL } = await (await fetch(`/api/files`)).json();
+
       const form = new FormData();
-      form.append("file", avatar[0], user.id + "");
-      await fetch(uploadURL, {
-        method: "POST",
-        body: form,
+      form.append("file", avatar[0], `${user.id}-avatar`);
+
+      const {
+        result: { id },
+      } = await (
+        await fetch(uploadURL, {
+          method: "POST",
+          body: form,
+        })
+      ).json();
+
+      editProfile({
+        email,
+        phone,
+        name,
+        avatarId: id,
       });
-      // editProfile({
-      //   email,
-      //   phone,
-      //   name,
-      //   // avatarURL: CF URL
-      // });
     } else {
       editProfile({ email, phone, name });
     }
-    // alert("프로필이 수정되었습니다.");
+    alert("프로필이 수정되었습니다.");
   };
 
   useEffect(() => {
