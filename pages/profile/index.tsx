@@ -7,6 +7,8 @@ import { Review, User } from "@prisma/client";
 import { cls } from "@libs/client/utils";
 import { makeImageUrl } from "../../libs/client/utils";
 import Image from "next/image";
+import useMutation from "../../libs/client/useMutation";
+import { useRouter } from "next/router";
 
 interface ReviewWithUser extends Review {
   createdBy: User;
@@ -17,31 +19,64 @@ interface IReviewsResponse {
   reviews: ReviewWithUser[];
 }
 
+interface ILogoutResponse {
+  ok: boolean;
+}
+
 const Profile: NextPage = () => {
+  const router = useRouter();
+  const [logout] = useMutation<ILogoutResponse>("/api/users/logout");
   const { user } = useUser();
   const { data } = useSWR<IReviewsResponse>("/api/reviews");
+
+  const onLogOut = () => {
+    logout({});
+    router.push("/enter");
+  };
 
   return (
     <Layout title="나의 프로필" hasTabBar>
       <div className="px-4">
-        <div className="flex items-center space-x-3">
-          {user?.avatar ? (
-            <Image
-              src={makeImageUrl(user.avatar, "avatar")}
-              className="w-16 h-16 rounded-full bg-slate-300"
-              width={48}
-              height={48}
-              alt="avatar"
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-full bg-slate-300" />
-          )}
-          <div className="flex flex-col">
-            <span className="font-medium text-gray-900">{user?.name}</span>
-            <Link href="/profile/edit">
-              <a className="text-sm text-gray-700">프로필 수정하기 &rarr;</a>
-            </Link>
+        <div className="flex items-center justify-between w-full space-x-3 ">
+          <div>
+            {user?.avatar ? (
+              <Image
+                src={makeImageUrl(user.avatar, "avatar")}
+                className="w-16 h-16 rounded-full bg-slate-300"
+                width={48}
+                height={48}
+                alt="avatar"
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-slate-300" />
+            )}
+            <div className="flex flex-col">
+              <span className="font-medium text-gray-900">{user?.name}</span>
+              <Link href="/profile/edit">
+                <a className="text-sm text-gray-700">프로필 수정하기 &rarr;</a>
+              </Link>
+            </div>
           </div>
+          <button
+            className="flex flex-col items-center text-gray-400 hover:text-slate-600"
+            onClick={onLogOut}
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            <div className="text-sm">로그아웃</div>
+          </button>
         </div>
         <div className="flex justify-around mt-10">
           <Link href="/profile/sold">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cls } from "@libs/client/utils";
 import Button from "@components/button";
@@ -7,7 +7,18 @@ import Layout from "@components/layout";
 import { useForm } from "react-hook-form";
 import useMutation from "@libs/client/useMutation";
 import { useRouter } from "next/router";
-import useUser from "../libs/client/useUser";
+import dynamic from "next/dynamic";
+
+const Bs = dynamic(
+  () =>
+    new Promise((resolve) =>
+      setTimeout(() => resolve(import("@components/bs")), 10000)
+    ),
+  {
+    ssr: false,
+    suspense: true,
+  }
+);
 
 interface IFormProps {
   email?: string;
@@ -86,9 +97,8 @@ export default function Enter() {
                     />
                   </div>
                   <Button
-                    text={
-                      tokenLoading ? "로딩중..." : "일회용 비밀번호 입력하기"
-                    }
+                    loading={tokenLoading}
+                    text="일회용 비밀번호 입력하기"
                   />
                 </form>
               </motion.div>
@@ -97,7 +107,7 @@ export default function Enter() {
           <AnimatePresence>
             {!data?.ok && (
               <motion.div layoutId="token">
-                <div className="relative grid w-full grid-cols-2 gap-16 border-b">
+                <div className="relative grid w-full grid-cols-2 border-b">
                   <AnimatePresence>
                     <button
                       className={cls(
@@ -154,22 +164,32 @@ export default function Enter() {
                         type="email"
                       />
                     ) : (
-                      <Input
-                        register={register("phone", { required: true })}
-                        kind="phone"
-                        label="휴대전화 번호"
-                        name="phone"
-                        placeholder="휴대전화 번호"
-                        type="number"
-                        required
-                      />
+                      <>
+                        <Suspense
+                          fallback={
+                            <span className="block text-center text-orange-500">
+                              Loading...
+                            </span>
+                          }
+                        >
+                          <Bs />
+                        </Suspense>
+                        <Input
+                          register={register("phone", { required: true })}
+                          kind="phone"
+                          label="휴대전화 번호"
+                          name="phone"
+                          placeholder="휴대전화 번호"
+                          type="number"
+                          required
+                        />
+                      </>
                     )}
                   </div>
                   <Button
+                    loading={loading}
                     text={
-                      loading
-                        ? "로딩중..."
-                        : method === "email"
+                      method === "email"
                         ? "로그인 링크 받기"
                         : "일회용 비밀번호 받기"
                     }
