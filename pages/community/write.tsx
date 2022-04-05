@@ -44,7 +44,7 @@ const Write: NextPage = () => {
           required
           placeholder="질문을 남겨주세요!"
         />
-        <Button text={loading ? "업로드중..." : "질문하기"} />
+        <Button text="질문하기" loading={loading} />
       </form>
     </Layout>
   );

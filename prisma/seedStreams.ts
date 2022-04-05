@@ -14,6 +14,9 @@ async function main() {
             id: 9,
           },
         },
+        cloudflareId: "",
+        cloudflareKey: "",
+        cloudflareUrl: "",
       },
     });
     console.log(`${item}/500`);
