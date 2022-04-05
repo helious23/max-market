@@ -56,6 +56,7 @@ const ItemDetail: NextPage = () => {
                 className="object-cover bg-slate-300"
                 alt="product"
                 layout="fill"
+                priority={true}
               />
             </div>
           ) : (

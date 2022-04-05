@@ -41,6 +41,7 @@ const StreamDetail: NextPage = () => {
   const { user } = useUser();
   const { register, handleSubmit, reset } = useForm<IMessageFormProps>();
   const [open, setOpen] = useState(false);
+  const [videoId, setVideoId] = useState("");
   const { data, mutate } = useSWR<StreamResponse>(
     router.query.id ? `/api/streams/${router.query.id}` : null,
     {
@@ -80,11 +81,30 @@ const StreamDetail: NextPage = () => {
     // sendMessage(form);
   };
 
+  useEffect(() => {
+    async function fetchData() {
+      const lifecycle = await (
+        await fetch(
+          `https://videodelivery.net/${data?.stream.cloudflareId}/lifecycle`
+        )
+      ).json();
+      console.log(lifecycle);
+      setVideoId(lifecycle.videoUID);
+    }
+    fetchData();
+  }, [data]);
+
   return (
     <Layout title={data?.stream?.name || "라이브"} canGoBack>
       {data ? (
         <div className="px-4 space-y-4">
-          <div className="w-full rounded-md shadow-sm aspect-video bg-slate-300" />
+          <iframe
+            className="w-full rounded-md shadow-sm aspect-video"
+            src={`https://iframe.videodelivery.net/${data?.stream?.cloudflareId}`}
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+            allowFullScreen={true}
+          ></iframe>
+
           <div className="mt-5">
             <h1 className="text-3xl font-bold text-gray-900">
               {data.stream?.name}
@@ -93,7 +113,7 @@ const StreamDetail: NextPage = () => {
               {data.stream?.price?.toLocaleString()} 원
             </span>
             <p className="my-6 text-gray-700 ">{data.stream?.description}</p>
-            {data.stream.userId === user?.id ? (
+            {data?.stream?.userId === user?.id ? (
               <div className="flex flex-col items-center justify-center">
                 <button
                   onClick={toggleStreamingInfo}

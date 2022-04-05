@@ -10,10 +10,16 @@ const handler = async (
   if (req.method === "GET") {
     const {
       query: { page },
+      session: { user },
     } = req;
     const streams = await client.stream.findMany({
       take: 10,
       skip: (+page - 1) * 10,
+      select: {
+        id: true,
+        name: true,
+        cloudflareId: true,
+      },
     });
     const streamCount = await client.stream.count();
     res.json({

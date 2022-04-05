@@ -7,6 +7,7 @@ import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 import { useInfiniteScroll } from "../../libs/client/useInfiniteScroll";
 import { useEffect } from "react";
+import Image from "next/image";
 
 interface StreamsResponse {
   ok: boolean;
@@ -35,7 +36,16 @@ const Streams: NextPage = () => {
         {streams.map((stream) => (
           <Link href={`/streams/${stream.id}`} key={`Stream:${stream.id}`}>
             <a className="block px-4 pt-8">
-              <div className="w-full rounded-md shadow-sm aspect-video bg-slate-300" />
+              <div className="relative w-full overflow-hidden rounded-md shadow-sm aspect-video bg-slate-300">
+                {stream.cloudflareId ? (
+                  <Image
+                    alt="thumbnails"
+                    priority={true}
+                    src={`https://videodelivery.net/${stream.cloudflareId}/thumbnails/thumbnail.jpg?height=270`}
+                    layout="fill"
+                  />
+                ) : null}
+              </div>
               <h3 className="mt-2 text-xl font-medium text-gray-700 ">
                 {stream.name}
               </h3>
