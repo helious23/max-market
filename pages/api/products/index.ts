@@ -20,7 +20,7 @@ const handler = async (
         },
       },
       take: 10,
-      skip: (+page - 1) * 10,
+      skip: page ? (+page - 1) * 10 : 0,
     });
     const productCount = await client.product.count();
 

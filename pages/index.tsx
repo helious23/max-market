@@ -9,6 +9,7 @@ import useSWRInfinite from "swr/infinite";
 import { useInfiniteScroll } from "@libs/client/useInfiniteScroll";
 import { useEffect } from "react";
 import client from "@libs/server/client";
+import useSWR, { SWRConfig } from "swr";
 
 export interface ProductWithFavCount extends Product {
   _count: { favs: number };
@@ -21,13 +22,16 @@ interface ProductsResponse {
 }
 
 const getKey = (pageIndex: number, previousPageData: ProductsResponse) => {
-  if (pageIndex === 0) return `/api/products?page=1`;
-  if (pageIndex + 1 > previousPageData.pages) return null;
+  if (previousPageData && !previousPageData.products.length) return null; // reached the end
   return `/api/products?page=${pageIndex + 1}`;
 };
 
-const Home: NextPage<{ products: ProductWithFavCount[] }> = ({ products }) => {
+const Home: NextPage = () => {
+  const { data } = useSWR<ProductsResponse>("/api/products");
+
   // const { data, setSize } = useSWRInfinite<ProductsResponse>(getKey);
+  // console.log(data);
+
   // const products = data ? data.flatMap((item) => item.products) : [];
 
   // const page = useInfiniteScroll();
@@ -40,12 +44,12 @@ const Home: NextPage<{ products: ProductWithFavCount[] }> = ({ products }) => {
   return (
     <Layout title="홈" seoTitle="Home" hasTabBar>
       <div className="flex flex-col mb-5 space-y-5">
-        {products?.map((product) => (
+        {data?.products?.map((product) => (
           <Item
             id={product?.id}
             title={product?.name}
             price={product?.price}
-            hearts={product?._count?.favs}
+            hearts={product?._count?.favs || 0}
             key={product?.id}
             image={product?.image}
           />
@@ -72,7 +76,26 @@ const Home: NextPage<{ products: ProductWithFavCount[] }> = ({ products }) => {
   );
 };
 
+const Page: NextPage<{ products: ProductWithFavCount[] }> = ({ products }) => {
+  return (
+    <SWRConfig
+      value={{
+        fallback: {
+          "/api/products": {
+            ok: true,
+            products,
+            page: 1,
+          },
+        },
+      }}
+    >
+      <Home />
+    </SWRConfig>
+  );
+};
+
 export async function getServerSideProps() {
+  console.log("SSR");
   const products = await client.product.findMany({});
 
   return {
@@ -82,4 +105,4 @@ export async function getServerSideProps() {
   };
 }
 
-export default Home;
+export default Page;
