@@ -8,6 +8,7 @@ import { Product } from "@prisma/client";
 import useSWRInfinite from "swr/infinite";
 import { useInfiniteScroll } from "@libs/client/useInfiniteScroll";
 import { useEffect } from "react";
+import client from "@libs/server/client";
 
 export interface ProductWithFavCount extends Product {
   _count: { favs: number };
@@ -25,36 +26,30 @@ const getKey = (pageIndex: number, previousPageData: ProductsResponse) => {
   return `/api/products?page=${pageIndex + 1}`;
 };
 
-const Home: NextPage = () => {
-  const { data, setSize } = useSWRInfinite<ProductsResponse>(getKey);
-  const products = data ? data.flatMap((item) => item.products) : [];
-  const page = useInfiniteScroll();
-  useEffect(() => {
-    setSize(page);
-  }, [setSize, page]);
+const Home: NextPage<{ products: ProductWithFavCount[] }> = ({ products }) => {
+  // const { data, setSize } = useSWRInfinite<ProductsResponse>(getKey);
+  // const products = data ? data.flatMap((item) => item.products) : [];
+
+  // const page = useInfiniteScroll();
+  // useEffect(() => {
+  //   setSize(page);
+  // }, [setSize, page]);
 
   const { user, isLoading } = useUser();
 
   return (
-    <Layout title="홈" hasTabBar>
+    <Layout title="홈" seoTitle="Home" hasTabBar>
       <div className="flex flex-col mb-5 space-y-5">
-        <Head>
-          <title>Home</title>
-        </Head>
-        {data ? (
-          products?.map((product) => (
-            <Item
-              id={product?.id}
-              title={product?.name}
-              price={product?.price}
-              hearts={product?._count.favs}
-              key={product?.id}
-              image={product?.image}
-            />
-          ))
-        ) : (
-          <span className="block text-center">로딩중...</span>
-        )}
+        {products?.map((product) => (
+          <Item
+            id={product?.id}
+            title={product?.name}
+            price={product?.price}
+            hearts={product?._count?.favs}
+            key={product?.id}
+            image={product?.image}
+          />
+        ))}
         <FloatingButton href="/products/upload">
           <svg
             className="w-6 h-6"
@@ -76,5 +71,15 @@ const Home: NextPage = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps() {
+  const products = await client.product.findMany({});
+
+  return {
+    props: {
+      products: JSON.parse(JSON.stringify(products)),
+    },
+  };
+}
 
 export default Home;

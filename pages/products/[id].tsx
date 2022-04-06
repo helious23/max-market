@@ -43,7 +43,11 @@ const ItemDetail: NextPage = () => {
   };
 
   return (
-    <Layout seoTitle={data?.product?.name || "상세 정보"} canGoBack>
+    <Layout
+      seoTitle={data?.product?.name || "상세 정보"}
+      title={data?.product?.name || "상세 정보"}
+      canGoBack
+    >
       <div className="px-4">
         <div className="mb-8">
           {data?.product?.image ? (

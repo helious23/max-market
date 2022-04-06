@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 interface LayoutProps {
+  title?: string;
   canGoBack?: boolean;
   hasTabBar?: boolean;
   children: React.ReactNode;
@@ -11,6 +12,7 @@ interface LayoutProps {
 }
 
 export default function Layout({
+  title,
   canGoBack,
   hasTabBar,
   children,
@@ -48,6 +50,7 @@ export default function Layout({
             </svg>
           </button>
         ) : null}
+        {title ? <span>{title}</span> : null}
       </div>
       <div className={cls("pt-20", hasTabBar ? "pb-10" : "")}>{children}</div>
       {hasTabBar ? (
