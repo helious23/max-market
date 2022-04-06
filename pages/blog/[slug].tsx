@@ -4,9 +4,17 @@ import matter from "gray-matter";
 import { unified } from "unified";
 import remarkParse from "remark-parse/lib";
 import remarkHtml from "remark-html";
+import Layout from "@components/layout";
 
-const Post: NextPage<{ post: string }> = ({ post }) => {
-  return <div>{post}</div>;
+const Post: NextPage<{ post: string; data: any }> = ({ post, data }) => {
+  return (
+    <Layout title={data.title} seoTitle={data.title} canGoBack>
+      <div
+        className="blog-post-content"
+        dangerouslySetInnerHTML={{ __html: post }}
+      />
+    </Layout>
+  );
 };
 
 export const getStaticPaths: GetStaticPaths = () => {
@@ -22,7 +30,7 @@ export const getStaticPaths: GetStaticPaths = () => {
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const { content } = matter.read(`posts/${ctx.params?.slug}.md`);
+  const { content, data } = matter.read(`posts/${ctx.params?.slug}.md`);
   const { value } = await unified()
     .use(remarkParse)
     .use(remarkHtml)
@@ -31,6 +39,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   return {
     props: {
       post: value,
+      data,
     },
   };
 };
