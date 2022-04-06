@@ -109,7 +109,7 @@ const CommunityPostDetail: NextPage = () => {
   }, [answerData, reset, mutate]);
 
   return (
-    <Layout title="동네질문" canGoBack>
+    <Layout seoTitle="동네질문" title="동네질문" canGoBack>
       <div className="space-y-4">
         <span className="ml-4 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
           동네질문

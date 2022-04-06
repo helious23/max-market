@@ -95,7 +95,11 @@ const StreamDetail: NextPage = () => {
   }, [data]);
 
   return (
-    <Layout title={data?.stream?.name || "라이브"} canGoBack>
+    <Layout
+      seoTitle={data?.stream.name || "라이브"}
+      title={data?.stream?.name || "라이브"}
+      canGoBack
+    >
       {data ? (
         <div className="px-4 space-y-4">
           <iframe

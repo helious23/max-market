@@ -37,7 +37,7 @@ const Write: NextPage = () => {
   }, [data, router]);
 
   return (
-    <Layout title="질문하기" canGoBack>
+    <Layout seoTitle="질문하기" title="질문하기" canGoBack>
       <form className="px-4 space-y-4" onSubmit={handleSubmit(onValid)}>
         <TextArea
           register={register("question", { required: true })}

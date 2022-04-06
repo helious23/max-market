@@ -104,7 +104,7 @@ const EditProfile: NextPage = () => {
   }, [avatar]);
 
   return (
-    <Layout title="프로필 수정" canGoBack>
+    <Layout seoTitle="프로필 수정" title="프로필 수정" canGoBack>
       <form className="px-4 space-y-4" onSubmit={handleSubmit(onValid)}>
         <div className="flex items-center space-x-3">
           {avatarPreview ? (

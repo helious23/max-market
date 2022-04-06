@@ -73,7 +73,7 @@ export default function Enter() {
   }, [tokenData, router]);
 
   return (
-    <Layout title="로그인" canGoBack>
+    <Layout seoTitle="로그인" title="로그인" canGoBack>
       <div className="w-full px-4 mt-8">
         <div className="mx-10">
           <h3 className="text-4xl font-bold ">안녕하세요!</h3>
