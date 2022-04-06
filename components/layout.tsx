@@ -1,19 +1,20 @@
 import { cls } from "@libs/client/utils";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 interface LayoutProps {
-  title?: string;
   canGoBack?: boolean;
   hasTabBar?: boolean;
   children: React.ReactNode;
+  seoTitle: string;
 }
 
 export default function Layout({
-  title,
   canGoBack,
   hasTabBar,
   children,
+  seoTitle,
 }: LayoutProps) {
   const router = useRouter();
   const onClick = () => {
@@ -22,6 +23,9 @@ export default function Layout({
 
   return (
     <div>
+      <Head>
+        <title>{seoTitle} | Max Market</title>
+      </Head>
       <div className="fixed top-0 flex items-center justify-center w-full max-w-lg px-5 py-4 text-lg font-medium text-gray-700 bg-white border-b">
         {canGoBack ? (
           <button
@@ -44,7 +48,6 @@ export default function Layout({
             </svg>
           </button>
         ) : null}
-        {title ? <span>{title}</span> : null}
       </div>
       <div className={cls("pt-20", hasTabBar ? "pb-10" : "")}>{children}</div>
       {hasTabBar ? (

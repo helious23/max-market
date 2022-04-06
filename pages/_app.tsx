@@ -1,7 +1,9 @@
+//@ts-nocheck
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { SWRConfig } from "swr";
 import useUser from "../libs/client/useUser";
+import Script from "next/script";
 
 function MyApp({ Component, pageProps }: AppProps) {
   console.log("App is running");
@@ -16,6 +18,36 @@ function MyApp({ Component, pageProps }: AppProps) {
       <div className="w-full max-w-lg mx-auto">
         <Component {...pageProps} />
       </div>
+      <Script
+        src="https://developers.kakao.com/sdk/js/kakao.js"
+        strategy="lazyOnload"
+      />
+      <Script
+        src="https://connect.facebook.net/en_US/sdk.js"
+        onLoad={() => {
+          window.fbAsyncInit = function () {
+            FB.init({
+              appId: "your-app-id",
+              autoLogAppEvents: true,
+              xfbml: true,
+              version: "v13.0",
+            });
+          };
+        }}
+      />
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
+        onLoad={() => {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+
+          gtag("js", new Date());
+
+          gtag("config", "GA_MEASUREMENT_ID");
+        }}
+      />
     </SWRConfig>
   );
 }
