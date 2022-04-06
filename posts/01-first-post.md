@@ -2,6 +2,7 @@
 title: Welcome Everyone
 date: 2022. 04.06
 category: thoughts
+id: 1
 ---
 
 
