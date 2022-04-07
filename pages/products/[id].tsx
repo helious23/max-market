@@ -47,6 +47,14 @@ const ItemDetail: NextPage<IItemDetailResponse> = ({
     // mutate("/api/users/me") // 단순 refetch
   };
 
+  if (router.isFallback) {
+    return (
+      <Layout title="Loading" seoTitle="Loading">
+        <span>Loading.....</span>
+      </Layout>
+    );
+  }
+
   return (
     <Layout
       seoTitle={product?.name || "상세 정보"}
@@ -170,7 +178,7 @@ const ItemDetail: NextPage<IItemDetailResponse> = ({
 export const getStaticPaths: GetStaticPaths = () => {
   return {
     paths: [],
-    fallback: "blocking",
+    fallback: true,
   };
 };
 
