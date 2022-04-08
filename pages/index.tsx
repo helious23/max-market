@@ -1,15 +1,14 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { GetServerSideProps, GetStaticProps, NextPage } from "next";
 import FloatingButton from "@components/floating-button";
 import Item from "@components/item";
 import Layout from "@components/layout";
 import useUser from "../libs/client/useUser";
-import Head from "next/head";
 import { Product } from "@prisma/client";
 import useSWRInfinite, { unstable_serialize } from "swr/infinite";
 import { useInfiniteScroll } from "@libs/client/useInfiniteScroll";
 import { useEffect } from "react";
 import client from "@libs/server/client";
-import useSWR, { SWRConfig } from "swr";
+import { SWRConfig } from "swr";
 
 export interface ProductWithFavCount extends Product {
   _count: { favs: number };
@@ -49,7 +48,7 @@ const Home: NextPage = () => {
                   id={product?.id}
                   title={product?.name}
                   price={product?.price}
-                  hearts={product?._count?.favs || 0}
+                  hearts={product?._count?.favs}
                   key={product?.id}
                   image={product?.image}
                 />
@@ -100,7 +99,7 @@ const Page: NextPage<ProductsResponse> = ({ products, pages }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async () => {
   const products = await client.product.findMany({
     include: {
       _count: {
@@ -112,6 +111,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     take: 10,
     skip: 0,
   });
+
+  if (!products) return { props: {} };
+
   const productCount = await client.product.count();
 
   return {
@@ -122,5 +124,32 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
   };
 };
+
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+//   const products = await client.product.findMany({
+//     include: {
+//       _count: {
+//         select: {
+//           favs: true,
+//         },
+//       },
+//     },
+//     take: 10,
+//     skip: 0,
+//   });
+
+//   if (!products) return { props: {} };
+
+//   const productCount = await client.product.count();
+//   await new Promise((resolve) => setTimeout(resolve, 5000));
+
+//   return {
+//     props: {
+//       ok: true,
+//       products: JSON.parse(JSON.stringify(products)),
+//       pages: Math.ceil(productCount / 10),
+//     },
+//   };
+// };
 
 export default Page;

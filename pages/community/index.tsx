@@ -105,11 +105,22 @@ const Community: NextPage<IPostsResponse> = ({ posts }) => {
 
 export const getStaticProps: GetStaticProps = async () => {
   console.log(
-    "=====================Building community STATICALLY====================="
+    "==================================== BUILDING COMM. STATICALLY ===================================="
   );
   const posts = await client.post.findMany({
     include: {
-      user: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      _count: {
+        select: {
+          answers: true,
+          wondering: true,
+        },
+      },
     },
   });
   return {

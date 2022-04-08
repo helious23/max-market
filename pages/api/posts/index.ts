@@ -65,12 +65,14 @@ const handler = async (
         },
       },
     });
-    await res.unstable_revalidate("/community");
-
-    res.json({
-      ok: true,
-      post,
-    });
+    try {
+      await res.unstable_revalidate("/community");
+      console.log("revalidate plz");
+      return res.json({ ok: true, post });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ ok: false, error });
+    }
   }
 };
 
