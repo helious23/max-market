@@ -29,6 +29,8 @@ const getKey = (pageIndex: number, previousPageData: ProductsResponse) => {
 const Home: NextPage = () => {
   const { user, isLoading } = useUser();
 
+  // useSWRInfinite 사용법
+  // https://swr.vercel.app/ko/docs/pagination#useswrinfinite
   const { data, setSize } = useSWRInfinite<ProductsResponse>(getKey);
 
   const page = useInfiniteScroll();
@@ -77,6 +79,8 @@ const Home: NextPage = () => {
 };
 
 const Page: NextPage<ProductsResponse> = ({ products, pages }) => {
+  // unstable_serialize 사용
+  // https://github.com/vercel/swr/issues/1520#issuecomment-933247768
   return (
     <SWRConfig
       value={{
