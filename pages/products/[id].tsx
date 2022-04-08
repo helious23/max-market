@@ -218,12 +218,12 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
       },
     },
   });
-  const isLiked = false;
+
   return {
     props: {
       product: JSON.parse(JSON.stringify(product)),
       relatedProducts: JSON.parse(JSON.stringify(relatedProducts)),
-      isLiked,
+      isLiked: false,
     },
   };
 };

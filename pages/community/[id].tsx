@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Button from "@components/button";
 import Layout from "@components/layout";
 import TextArea from "@components/textarea";
@@ -12,6 +12,7 @@ import useMutation from "../../libs/client/useMutation";
 import { cls, makeImageUrl } from "../../libs/client/utils";
 import useUser from "../../libs/client/useUser";
 import Image from "next/image";
+import client from "@libs/server/client";
 
 interface IAnswerFormProps {
   answer: string;
@@ -225,6 +226,22 @@ const CommunityPostDetail: NextPage = () => {
       </div>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  if (!ctx?.params?.id) {
+    return {
+      props: {},
+    };
+  }
+  const post = await client.post.findUnique({
+    where: {
+      id: +ctx.params.id,
+    },
+  });
+  return {
+    props: {},
+  };
 };
 
 export default CommunityPostDetail;

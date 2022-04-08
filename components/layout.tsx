@@ -28,7 +28,7 @@ export default function Layout({
       <Head>
         <title>{seoTitle} | Max Market</title>
       </Head>
-      <div className="fixed top-0 flex items-center justify-center w-full max-w-lg px-5 py-4 text-lg font-medium text-gray-700 bg-white border-b">
+      <div className="fixed top-0 z-10 flex items-center justify-center w-full max-w-lg px-5 py-4 text-lg font-medium text-gray-700 bg-white border-b">
         {canGoBack ? (
           <button
             onClick={onClick}

@@ -11,6 +11,7 @@ const handler = async (
     const {
       query: { page },
     } = req;
+
     const products = await client.product.findMany({
       include: {
         _count: {

@@ -1,11 +1,11 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import FloatingButton from "@components/floating-button";
 import Item from "@components/item";
 import Layout from "@components/layout";
 import useUser from "../libs/client/useUser";
 import Head from "next/head";
 import { Product } from "@prisma/client";
-import useSWRInfinite from "swr/infinite";
+import useSWRInfinite, { unstable_serialize } from "swr/infinite";
 import { useInfiniteScroll } from "@libs/client/useInfiniteScroll";
 import { useEffect } from "react";
 import client from "@libs/server/client";
@@ -22,38 +22,38 @@ interface ProductsResponse {
 }
 
 const getKey = (pageIndex: number, previousPageData: ProductsResponse) => {
-  if (previousPageData && !previousPageData.products.length) return null; // reached the end
+  if (previousPageData && !previousPageData.products.length) return null;
   return `/api/products?page=${pageIndex + 1}`;
 };
 
 const Home: NextPage = () => {
-  const { data } = useSWR<ProductsResponse>("/api/products");
-
-  // const { data, setSize } = useSWRInfinite<ProductsResponse>(getKey);
-  // console.log(data);
-
-  // const products = data ? data.flatMap((item) => item.products) : [];
-
-  // const page = useInfiniteScroll();
-  // useEffect(() => {
-  //   setSize(page);
-  // }, [setSize, page]);
-
   const { user, isLoading } = useUser();
+
+  const { data, setSize } = useSWRInfinite<ProductsResponse>(getKey);
+
+  const page = useInfiniteScroll();
+
+  useEffect(() => {
+    setSize(page);
+  }, [setSize, page]);
 
   return (
     <Layout title="홈" seoTitle="Home" hasTabBar>
       <div className="flex flex-col mb-5 space-y-5">
-        {data?.products?.map((product) => (
-          <Item
-            id={product?.id}
-            title={product?.name}
-            price={product?.price}
-            hearts={product?._count?.favs || 0}
-            key={product?.id}
-            image={product?.image}
-          />
-        ))}
+        {data
+          ? data?.map((result) => {
+              return result.products.map((product) => (
+                <Item
+                  id={product?.id}
+                  title={product?.name}
+                  price={product?.price}
+                  hearts={product?._count?.favs || 0}
+                  key={product?.id}
+                  image={product?.image}
+                />
+              ));
+            })
+          : "Loading"}
         <FloatingButton href="/products/upload">
           <svg
             className="w-6 h-6"
@@ -76,16 +76,18 @@ const Home: NextPage = () => {
   );
 };
 
-const Page: NextPage<{ products: ProductWithFavCount[] }> = ({ products }) => {
+const Page: NextPage<ProductsResponse> = ({ products, pages }) => {
   return (
     <SWRConfig
       value={{
         fallback: {
-          "/api/products": {
-            ok: true,
-            products,
-            page: 1,
-          },
+          [unstable_serialize(getKey)]: [
+            {
+              ok: true,
+              products,
+              pages,
+            },
+          ],
         },
       }}
     >
@@ -94,15 +96,27 @@ const Page: NextPage<{ products: ProductWithFavCount[] }> = ({ products }) => {
   );
 };
 
-export async function getServerSideProps() {
-  console.log("SSR");
-  const products = await client.product.findMany({});
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const products = await client.product.findMany({
+    include: {
+      _count: {
+        select: {
+          favs: true,
+        },
+      },
+    },
+    take: 10,
+    skip: 0,
+  });
+  const productCount = await client.product.count();
 
   return {
     props: {
+      ok: true,
       products: JSON.parse(JSON.stringify(products)),
+      pages: Math.ceil(productCount / 10),
     },
   };
-}
+};
 
 export default Page;
