@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import useSWR, { useSWRConfig } from "swr";
 import { Product, User } from "@prisma/client";
 import Link from "next/link";
-import Head from "next/head";
 import useMutation from "../../libs/client/useMutation";
 import { cls } from "@libs/client/utils";
 import useUser from "@libs/client/useUser";
@@ -27,7 +26,6 @@ interface IItemDetailResponse {
 const ItemDetail: NextPage<IItemDetailResponse> = ({
   product,
   relatedProducts,
-  isLiked,
 }) => {
   const { user, isLoading } = useUser();
   const router = useRouter();
@@ -115,12 +113,12 @@ const ItemDetail: NextPage<IItemDetailResponse> = ({
                 onClick={onFavClick}
                 className={cls(
                   "flex items-center justify-center rounded-md p-3 hover:bg-gray-100 focus:outline-none",
-                  isLiked
+                  data?.isLiked
                     ? "text-red-500 hover:text-red-600"
                     : "text-gray-400  hover:text-gray-500 "
                 )}
               >
-                {isLiked ? (
+                {data?.isLiked ? (
                   <svg
                     className="w-6 h-6"
                     fill="currentColor"
@@ -223,7 +221,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     props: {
       product: JSON.parse(JSON.stringify(product)),
       relatedProducts: JSON.parse(JSON.stringify(relatedProducts)),
-      isLiked: false,
     },
   };
 };

@@ -51,10 +51,13 @@ const handler = async (
       },
     });
 
-    res.json({
-      ok: true,
-      product,
-    });
+    try {
+      await res.unstable_revalidate("/");
+      return res.json({ ok: true, product });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ ok: false, error });
+    }
   }
 };
 

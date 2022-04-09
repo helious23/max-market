@@ -9,11 +9,11 @@ const handler = async (
 ) => {
   if (req.method === "GET") {
     const {
-      query: { latitude, longitude },
+      query: { page },
     } = req;
 
-    const parsedLatitude = parseFloat(latitude.toString());
-    const parsedLongitude = parseFloat(longitude.toString());
+    // const parsedLatitude = parseFloat(latitude.toString());
+    // const parsedLongitude = parseFloat(longitude.toString());
 
     const posts = await client.post.findMany({
       include: {
@@ -30,21 +30,25 @@ const handler = async (
           },
         },
       },
-      where: {
-        latitude: {
-          gte: parsedLatitude - 0.01,
-          lte: parsedLatitude + 0.01,
-        },
-        longitude: {
-          gte: parsedLongitude - 0.01,
-          lte: parsedLongitude + 0.01,
-        },
-      },
+      take: 10,
+      skip: page ? (+page - 1) * 10 : 0,
+      // where: {
+      //   latitude: {
+      //     gte: parsedLatitude - 0.01,
+      //     lte: parsedLatitude + 0.01,
+      //   },
+      //   longitude: {
+      //     gte: parsedLongitude - 0.01,
+      //     lte: parsedLongitude + 0.01,
+      //   },
+      // },
     });
+    const postCount = await client.product.count();
 
     res.json({
       ok: true,
       posts,
+      pages: Math.ceil(postCount / 10),
     });
   }
   if (req.method === "POST") {
@@ -67,7 +71,6 @@ const handler = async (
     });
     try {
       await res.unstable_revalidate("/community");
-      console.log("revalidate plz");
       return res.json({ ok: true, post });
     } catch (error) {
       console.log(error);

@@ -1,9 +1,14 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type {
+  GetServerSideProps,
+  GetStaticPaths,
+  GetStaticProps,
+  NextPage,
+} from "next";
 import Button from "@components/button";
 import Layout from "@components/layout";
 import TextArea from "@components/textarea";
 import { useForm } from "react-hook-form";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { useRouter } from "next/router";
 import { Answer, Post, User } from "@prisma/client";
 import Link from "next/link";
@@ -39,11 +44,12 @@ interface IAnswerResponse {
   answer: AnswerWithUser;
 }
 
-const CommunityPostDetail: NextPage = () => {
+const CommunityPostDetail: NextPage<ICommunityPostResponse> = ({ post }) => {
   const { user } = useUser();
   const router = useRouter();
+  const { mutate } = useSWRConfig();
   const { register, handleSubmit, reset } = useForm<IAnswerFormProps>();
-  const { data, mutate } = useSWR<ICommunityPostResponse>(
+  const { data, mutate: boundedMutate } = useSWR<ICommunityPostResponse>(
     router.query.id ? `/api/posts/${router.query.id}` : null
   );
   const [toggleWonder, { loading }] = useMutation(
@@ -60,7 +66,7 @@ const CommunityPostDetail: NextPage = () => {
 
   const onWonderClick = () => {
     if (!data) return;
-    mutate(
+    boundedMutate(
       {
         ...data,
         post: {
@@ -76,6 +82,7 @@ const CommunityPostDetail: NextPage = () => {
       },
       false
     );
+
     if (!loading) {
       toggleWonder({});
     }
@@ -105,9 +112,9 @@ const CommunityPostDetail: NextPage = () => {
       //   },
       //   false
       // );
-      mutate();
+      boundedMutate();
     }
-  }, [answerData, reset, mutate]);
+  }, [answerData, reset, boundedMutate]);
 
   return (
     <Layout seoTitle="동네질문" title="동네질문" canGoBack>
@@ -115,11 +122,11 @@ const CommunityPostDetail: NextPage = () => {
         <span className="ml-4 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
           동네질문
         </span>
-        <Link href={`/profile/${data?.post?.userId}`}>
+        <Link href={`/profile/${post?.userId}`}>
           <a className="flex items-center px-4 pb-3 mb-3 space-x-3 border-b">
-            {data?.post?.user?.avatar ? (
+            {post?.user?.avatar ? (
               <Image
-                src={makeImageUrl(data.post.user.avatar, "avatar")}
+                src={makeImageUrl(post.user.avatar, "avatar")}
                 className="w-10 h-10 rounded-full bg-slate-300"
                 width={48}
                 height={48}
@@ -130,7 +137,7 @@ const CommunityPostDetail: NextPage = () => {
             )}
             <div>
               <p className="text-sm font-medium text-gray-700">
-                {data?.post?.user?.name}
+                {post?.user?.name}
               </p>
               <p className="text-xs font-medium text-gray-500">
                 프로필 보기 &rarr;
@@ -141,7 +148,7 @@ const CommunityPostDetail: NextPage = () => {
         <div>
           <div className="px-4 mt-2 text-gray-700">
             <span className="font-medium text-orange-500">Q.</span>
-            {data?.post?.question}
+            {post?.question}
           </div>
           <div className="mt-3 flex w-full space-x-5 border-t border-b-[2px] px-4 py-2.5  text-gray-700">
             <button
@@ -187,7 +194,7 @@ const CommunityPostDetail: NextPage = () => {
           </div>
         </div>
         <div className="px-4 my-5 space-y-5">
-          {data?.post?.answers?.map((answer) => (
+          {post?.answers?.map((answer) => (
             <div
               className="flex items-start space-x-3"
               key={`Answer:${answer.id}`}
@@ -228,19 +235,58 @@ const CommunityPostDetail: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getStaticPaths: GetStaticPaths = () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
   if (!ctx?.params?.id) {
     return {
       props: {},
     };
   }
+
   const post = await client.post.findUnique({
     where: {
-      id: +ctx.params.id,
+      id: +ctx.params.id.toString(),
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
+        },
+      },
+      _count: {
+        select: {
+          answers: true,
+          wondering: true,
+        },
+      },
+      answers: {
+        select: {
+          id: true,
+          answer: true,
+          createdAt: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+            },
+          },
+        },
+      },
     },
   });
   return {
-    props: {},
+    props: {
+      post: JSON.parse(JSON.stringify(post)),
+    },
   };
 };
 

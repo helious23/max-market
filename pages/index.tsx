@@ -43,7 +43,7 @@ const Home: NextPage = () => {
       <div className="flex flex-col mb-5 space-y-5">
         {data
           ? data?.map((result) => {
-              return result.products.map((product) => (
+              return result?.products?.map((product) => (
                 <Item
                   id={product?.id}
                   title={product?.name}
@@ -99,7 +99,7 @@ const Page: NextPage<ProductsResponse> = ({ products, pages }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const products = await client.product.findMany({
     include: {
       _count: {
@@ -126,6 +126,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 // export const getServerSideProps: GetServerSideProps = async (ctx) => {
+//   console.log(ctx);
 //   const products = await client.product.findMany({
 //     include: {
 //       _count: {
@@ -141,7 +142,7 @@ export const getStaticProps: GetStaticProps = async () => {
 //   if (!products) return { props: {} };
 
 //   const productCount = await client.product.count();
-//   await new Promise((resolve) => setTimeout(resolve, 5000));
+//   // await new Promise((resolve) => setTimeout(resolve, 5000));
 
 //   return {
 //     props: {
