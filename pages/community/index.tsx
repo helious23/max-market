@@ -123,8 +123,6 @@ const Community: NextPage = () => {
 };
 
 const Page: NextPage<IPostsResponse> = ({ posts, pages }) => {
-  // unstable_serialize 사용
-  // https://github.com/vercel/swr/issues/1520#issuecomment-933247768
   return (
     <SWRConfig
       value={{
