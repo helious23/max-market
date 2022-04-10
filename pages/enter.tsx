@@ -9,18 +9,6 @@ import useMutation from "@libs/client/useMutation";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 
-const Bs = dynamic(
-  //@ts-ignore
-  () =>
-    new Promise((resolve) =>
-      setTimeout(() => resolve(import("@components/bs")), 10000)
-    ),
-  {
-    ssr: false,
-    suspense: true,
-  }
-);
-
 interface IFormProps {
   email?: string;
   phone?: string;
@@ -165,26 +153,15 @@ export default function Enter() {
                         type="email"
                       />
                     ) : (
-                      <>
-                        <Suspense
-                          fallback={
-                            <span className="block text-center text-orange-500">
-                              Loading...
-                            </span>
-                          }
-                        >
-                          <Bs />
-                        </Suspense>
-                        <Input
-                          register={register("phone", { required: true })}
-                          kind="phone"
-                          label="휴대전화 번호"
-                          name="phone"
-                          placeholder="휴대전화 번호"
-                          type="number"
-                          required
-                        />
-                      </>
+                      <Input
+                        register={register("phone", { required: true })}
+                        kind="phone"
+                        label="휴대전화 번호"
+                        name="phone"
+                        placeholder="휴대전화 번호"
+                        type="number"
+                        required
+                      />
                     )}
                   </div>
                   <Button
