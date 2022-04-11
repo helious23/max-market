@@ -65,6 +65,7 @@ export default function Enter() {
       <div className="w-full px-4 mt-8">
         <div className="mx-10">
           <h3 className="text-4xl font-bold ">안녕하세요!</h3>
+          <h2 className="mt-4 text-xl font-semibold ">맥스 마켓 입니다.</h2>
           <h2 className="mt-4 text-xl font-semibold ">만나서 반가워요 :)</h2>
         </div>
         <div className="mt-8">
