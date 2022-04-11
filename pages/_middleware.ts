@@ -8,7 +8,8 @@ export function middleware(req: NextRequest, event: NextFetchEvent) {
   // if (!req.url.includes("/api")) {
   //   if (!req.url.includes("/enter")) {
   //     if (!req.cookies.maxSession) {
-  //       return NextResponse.redirect(`${req.nextUrl.origin}/enter`);
+  //       // return NextResponse.redirect(`${req.nextUrl.origin}/enter`);
+  //       return NextResponse.redirect(new URL("/enter", req.url));
   //     }
   //   }
   // }
