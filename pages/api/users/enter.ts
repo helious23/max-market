@@ -46,6 +46,7 @@ const handler = async (
     const message = await twilioClient.messages.create({
       messagingServiceSid: process.env.MSG_SERVICE_SID,
       to: `+82${phone}`,
+      from: "+82",
       body: `로그인을 위한 일회용 비밀번호는 ${payload} 입니다.`,
     });
     console.log(message);
